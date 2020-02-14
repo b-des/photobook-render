@@ -3,7 +3,7 @@ import imgkit
 from PIL import Image, ImageOps
 import image_slicer
 
-url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
+render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 
 options = {
     'window-status': 'ready',
@@ -84,7 +84,11 @@ def create_borders(pages):
 def make_previews(pages=0, uid='ojlzBWuRicYHXzG2', domain='pechat.photo', dest=''):
     page = 1
     while page <= pages:
-        imgkit.from_url(url.format(domain, uid, page), os.path.join(dest, '{}.jpg'.format(page)), options=options)
+        dest = os.path.join(dest, '{}.jpg'.format(page))
+        url = render_url.format(domain, uid, page)
+        print(dest)
+        print(url)
+        imgkit.from_url(url, dest, options=options)
         slice_page(page, pages)
         page = page + 1
 
