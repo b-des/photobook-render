@@ -1,5 +1,5 @@
 # pull official base image
-FROM ubuntu:18.04
+FROM python:3.7-alpine
 
 # set work directory
 WORKDIR /usr/src/app
@@ -7,15 +7,9 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update
-RUN apt-get -qq -y install python3 python3-pip
-RUN apt-get -qq -y install wkhtmltopdf
-#RUN apt-get -qq -y install jpeg-dev zlib-dev python-dev
-RUN apt-get -qq -y install libxml2-dev libxslt1-dev
-
-
-#RUN python -m venv ./venv
-#RUN source venv/bin/activate
+RUN apk add --no-cache jpeg-dev zlib-dev
+RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
+    && pip install Pillow
 
 # install dependencies
 RUN pip install --upgrade pip
