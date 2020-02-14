@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update
 RUN apt-get -qq -y install wkhtmltopdf
 #RUN apt-get -qq -y install jpeg-dev zlib-dev python-dev
-RUN apt-get -qq -y install libxml2-dev libxslt1-dev lxml
+RUN apt-get -qq -y install libxml2-dev libxslt1-dev
 
 
 #RUN python -m venv ./venv
