@@ -7,10 +7,9 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apk add --no-cache wkhtmltopdf
-RUN apk add --no-cache jpeg-dev zlib-dev
-RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
-    && pip install Pillow
+RUN apt-get installwkhtmltopdf
+RUN apt-get install jpeg-dev zlib-dev
+RUN pip install Pillow
 
 # install dependencies
 RUN pip install --upgrade pip
