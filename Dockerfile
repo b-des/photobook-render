@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN apt-get update
 RUN apt-get -qq -y install wkhtmltopdf
-RUN apt-get -qq -y install libjpeg-dev zlib-dev
+RUN apt-get -qq -y install libjpeg-dev zlib1g-dev
 RUN pip install Pillow
 
 # install dependencies
