@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN apt-get update
+RUN apt-get -qq -y install python3.8.1 python3-pip
 RUN apt-get -qq -y install wkhtmltopdf
 #RUN apt-get -qq -y install jpeg-dev zlib-dev python-dev
 RUN apt-get -qq -y install libxml2-dev libxslt1-dev
