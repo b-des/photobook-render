@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+RUN apt-get update
 RUN apt-get install wkhtmltopdf
 RUN apt-get install jpeg-dev zlib-dev python-dev
 RUN apt-get install libxml2-dev libxslt1-dev
