@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN apk add --no-cache wkhtmltopdf
+RUN apk add --no-cache libxslt-devel libxml2-devel
 RUN apk add --no-cache jpeg-dev zlib-dev
 RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
     && pip install Pillow
