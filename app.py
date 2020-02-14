@@ -14,7 +14,8 @@ def index():
 
 @app.route("/make-preview")
 def previews():
-    make_previews(pages=2)
+    dest = '/var/www/demonstration/data/www/pechat.photo/photobook/snapshots/test'
+    make_previews(pages=2, dest=dest)
     return "ok"
 
 

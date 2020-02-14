@@ -1,3 +1,4 @@
+import os
 import imgkit
 from PIL import Image, ImageOps
 import image_slicer
@@ -80,10 +81,10 @@ def create_borders(pages):
     right_image.save('images/{}.jpg'.format(pages * 2 - 1))
 
 
-def make_previews(pages=0, uid='ojlzBWuRicYHXzG2', domain='pechat.photo'):
+def make_previews(pages=0, uid='ojlzBWuRicYHXzG2', domain='pechat.photo', dest=''):
     page = 1
     while page <= pages:
-        imgkit.from_url(url.format(domain, uid, page), 'images/{}.jpg'.format(page), options=options)
+        imgkit.from_url(url.format(domain, uid, page), os.path.join(dest, '{}.jpg'.format(page)), options=options)
         slice_page(page, pages)
         page = page + 1
 
