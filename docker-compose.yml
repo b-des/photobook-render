@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  photobook:
+    build: .
+    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
+    restart: always
+    volumes:
+      - /home/dev50/images/:/usr/src/app/images/
+    ports:
+      - 7000-7020:5000
