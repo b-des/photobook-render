@@ -88,7 +88,7 @@ def make_previews(pages=0, uid='ojlzBWuRicYHXzG2', domain='pechat.photo', dest='
         url = render_url.format(domain, uid, page)
         print(dest)
         print(url)
-        imgkit.from_url(url, dest, options=options)
+        imgkit.from_url(url, 'images/{}.jpg'.format(page), options=options)
         slice_page(page, pages)
         page = page + 1
 

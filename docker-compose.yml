@@ -6,6 +6,6 @@ services:
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     restart: always
     volumes:
-      - /var/www/demonstration/data/www/pechat.photo/photobook/snapshots/test:/var/www/demonstration/data/www/pechat.photo/photobook/snapshots/test
+      - /var/www/demonstration/data/www/pechat.photo/photobook/snapshots/test:/usr/src/app/images
     ports:
       - 7000:5000
