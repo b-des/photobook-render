@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN apt-get update
+RUN sed -i.bak 's/us-west-2\.ec2\.//' /etc/apt/sources.list
 RUN apt-get -qq -y install wkhtmltopdf
 RUN apt-get -qq -y install jpeg-dev zlib-dev
 RUN pip install Pillow
