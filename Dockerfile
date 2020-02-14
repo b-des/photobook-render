@@ -7,12 +7,12 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apk add --no-cache libxml2-dev libxslt1-dev zlib1g-dev python3-pip
-RUN apk add --no-cache pip3 install lxml
-RUN apk add --no-cache wkhtmltopdf
 RUN apk add --no-cache jpeg-dev zlib-dev
 RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
     && pip install Pillow
+
+#RUN python -m venv ./venv
+#RUN source venv/bin/activate
 
 # install dependencies
 RUN pip install --upgrade pip
