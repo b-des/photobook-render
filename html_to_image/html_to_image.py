@@ -2,30 +2,33 @@ import os
 import imgkit
 from PIL import Image, ImageOps
 import image_slicer
+from domain_dict import domains
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 
 options = {
     'window-status': 'ready',
-    'width': '1000',
-    'height': '500',
 }
-#1 - 10,1
-#2 - 2,3
-#3 - 4,5
-#4 - 6,7
-#5 - 8,9
 
 
-def slice_page(page, pages):
-    sliced = image_slicer.slice('images/{}.jpg'.format(page), 2, save=False)
+def destination_file(domain, uid, filename=None):
+    path = os.path.join(domains[domain], 'photobook/snapshots', uid)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    if filename is None:
+        return path
+    return os.path.join(path, '{}.jpg'.format(filename))
+
+
+def slice_page(page, pages, domain, uid):
+    sliced = image_slicer.slice(destination_file(domain, uid, page), 2, save=False)
     if page == 1:
-        sliced[0].save("images/{}.jpg".format(pages*2))
-        sliced[1].save("images/{}.jpg".format(1))
+        sliced[0].save(destination_file(domain, uid, pages*2))
+        sliced[1].save(destination_file(domain, uid, 1))
     else:
         number = page - 2 + page
-        sliced[0].save("images/{}.jpg".format(number))
-        sliced[1].save("images/{}.jpg".format(number + 1))
+        sliced[0].save(destination_file(domain, uid, number))
+        sliced[1].save(destination_file(domain, uid, number + 1))
 
 
 def create_coverages(pages):
@@ -43,10 +46,10 @@ def create_coverages(pages):
     new_im.save('images/book-covers.jpg')
 
 
-def create_borders(pages):
+def create_borders(pages, domain, uid):
     # left canvas
-    cover_right = Image.open('images/1.jpg')
-    left_image = Image.open('images/2.jpg')
+    cover_right = Image.open(destination_file(domain, uid, 1))
+    left_image = Image.open(destination_file(domain, uid, 2))
 
     bottom_box = (0, cover_right.size[1] - 10, cover_right.size[0], cover_right.size[1])
     top_box = (0, 0, cover_right.size[0], 10)
@@ -60,11 +63,11 @@ def create_borders(pages):
     left_image.paste(top_region, (0, 0))
     left_image.paste(left_region, (0, 0))
 
-    left_image.save("images/2.jpg")
+    left_image.save(destination_file(domain, uid, 2))
 
     # right canvas
-    cover_left = Image.open('images/{}.jpg'.format(pages * 2))
-    right_image = Image.open('images/{}.jpg'.format(pages * 2 - 1))
+    cover_left = Image.open(destination_file(domain, uid, pages * 2))
+    right_image = Image.open(destination_file(domain, uid, pages * 2 - 1))
 
     bottom_box = (0, cover_left.size[1] - 10, cover_left.size[0], cover_left.size[1])
     top_box = (0, 0, cover_left.size[0], 10)
@@ -78,19 +81,20 @@ def create_borders(pages):
     right_image.paste(top_region, (0, 0))
     right_image.paste(right_region, (right_image.size[0] - 10, 0))
 
-    right_image.save('images/{}.jpg'.format(pages * 2 - 1))
+    right_image.save(destination_file(domain, uid, pages * 2 - 1))
 
 
-def make_previews(pages=0, uid='ojlzBWuRicYHXzG2', domain='pechat.photo', dest=''):
+def make_previews(pages=0, uid='', domain='', size=None):
+    if size is None:
+        size = {'width': '1000', 'height': '500'}
     page = 1
     while page <= pages:
-        dest = os.path.join(dest, '{}.jpg'.format(page))
+        destination = destination_file(domain, uid, page)
         url = render_url.format(domain, uid, page)
-        print(dest)
-        print(url)
-        imgkit.from_url(url, 'images/{}.jpg'.format(page), options=options)
-        slice_page(page, pages)
+        options.update(size)
+        imgkit.from_url(url, destination, options=options)
+        slice_page(page, pages, domain, uid)
         page = page + 1
 
-    create_borders(pages)
+    create_borders(pages, domain, uid)
     #create_coverages()
