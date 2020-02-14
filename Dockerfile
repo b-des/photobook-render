@@ -7,8 +7,9 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apt-get install wkhtmltopdf
-RUN apt-get install jpeg-dev zlib-dev
+RUN apt-get update
+RUN apt-get -qq -y install wkhtmltopdf
+RUN apt-get -qq -y install jpeg-dev zlib-dev
 RUN pip install Pillow
 
 # install dependencies
