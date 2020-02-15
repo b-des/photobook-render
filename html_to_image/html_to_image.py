@@ -45,7 +45,7 @@ def slice_page(page, pages, domain, uid):
         else:
             sliced[1].save(destination_file(domain, uid, number + 1))
 
-    os.remove(original)
+    #os.remove(original)
 
 
 def create_coverages(pages):
