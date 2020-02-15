@@ -8,6 +8,9 @@ render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&p
 
 options = {
     'window-status': 'ready',
+    #'quiet': '',
+    'quality': 100,
+    'format': 'jpg'
 }
 
 
@@ -24,28 +27,35 @@ def destination_file(domain, uid, filename=None):
     return os.path.join(path, '{}.jpg'.format(filename))
 
 
+def slice(path):
+    img = Image.open(path)
+    res = (img.crop((0, 0, 500, 500)), img.crop((500, 0, 1000, 500)))
+    return res
+
+
 def slice_page(page, pages, domain, uid):
     original = destination_file(domain, uid, '{}-full'.format(page))
     sliced = image_slicer.slice(original, 2, save=False)
+    slice(original)
     if page == 1:
-        sliced[0].save(destination_file(domain, uid, '{}-original'.format(pages * 2)))
-        sliced[1].save(destination_file(domain, uid, '1-original'))
+        sliced[0].image.save(destination_file(domain, uid, '{}-original'.format(pages * 2)))
+        sliced[1].image.save(destination_file(domain, uid, '1-original'))
 
-        sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2))
-        sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1))
+        sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2), quality=100)
+        sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1), quality=100)
     else:
         number = page - 2 + page
         if number != 2:
-            sliced[0].image.crop((10, 10, 500, 490)).save(destination_file(domain, uid, number))
+            sliced[0].image.crop((10, 10, 500, 490)).save(destination_file(domain, uid, number), quality=100)
         else:
-            sliced[0].save(destination_file(domain, uid, number))
+            sliced[0].image.save(destination_file(domain, uid, number), quality=100)
 
         if number + 1 != pages*2-1:
-            sliced[1].image.crop((0, 10, 490, 490)).save(destination_file(domain, uid, number + 1))
+            sliced[1].image.crop((0, 10, 490, 490)).save(destination_file(domain, uid, number + 1), quality=100)
         else:
-            sliced[1].save(destination_file(domain, uid, number + 1))
+            sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
-    #os.remove(original)
+    os.remove(original)
 
 
 def create_coverages(pages):
@@ -80,7 +90,7 @@ def create_borders(pages, domain, uid):
     left_image.paste(top_region, (0, 0))
     left_image.paste(left_region, (0, 0))
 
-    left_image.save(destination_file(domain, uid, 2))
+    left_image.save(destination_file(domain, uid, 2), quality=100)
 
     # right canvas
     cover_left = Image.open(destination_file(domain, uid, '{}-original'.format(pages * 2)))
@@ -98,7 +108,7 @@ def create_borders(pages, domain, uid):
     right_image.paste(top_region, (0, 0))
     right_image.paste(right_region, (right_image.size[0] - 10, 0))
 
-    right_image.save(destination_file(domain, uid, pages * 2 - 1))
+    right_image.save(destination_file(domain, uid, pages * 2 - 1), quality=100)
     os.remove(destination_file(domain, uid, '{}-original'.format(1)))
     os.remove(destination_file(domain, uid, '{}-original'.format(pages * 2)))
 
@@ -122,11 +132,13 @@ def make_previews(pages=0, uid='', domain='', size=None):
     while page <= pages:
         destination = destination_file(domain, uid, '{}-full'.format(page))
         url = render_url.format(domain, uid, page)
+
         options.update(size)
         try:
             imgkit.from_url(url, destination, options=options)
         except:
             return {'message': "Error occurred while parse url", 'code': 404}
+
 
         slice_page(page, pages, domain, uid)
         page = page + 1
