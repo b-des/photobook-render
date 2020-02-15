@@ -28,14 +28,23 @@ def slice_page(page, pages, domain, uid):
     original = destination_file(domain, uid, '{}-full'.format(page))
     sliced = image_slicer.slice(original, 2, save=False)
     if page == 1:
-        sliced[0].save(destination_file(domain, uid, pages * 2))
-        sliced[1].save(destination_file(domain, uid, 1))
+        sliced[0].save(destination_file(domain, uid, '{}-original'.format(pages * 2)))
+        sliced[1].save(destination_file(domain, uid, '1-original'))
+
+        sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2))
+        sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1))
     else:
         number = page - 2 + page
-        print(number)
-        sliced[0].save(destination_file(domain, uid, number))
-        print(number + 1)
-        sliced[1].save(destination_file(domain, uid, number + 1))
+        if number != 2:
+            sliced[0].image.crop((10, 10, 500, 490)).save(destination_file(domain, uid, number))
+        else:
+            sliced[0].save(destination_file(domain, uid, number))
+
+        if number + 1 != pages*2-1:
+            sliced[1].image.crop((0, 10, 490, 490)).save(destination_file(domain, uid, number + 1))
+        else:
+            sliced[1].save(destination_file(domain, uid, number + 1))
+
     os.remove(original)
 
 
@@ -56,7 +65,7 @@ def create_coverages(pages):
 
 def create_borders(pages, domain, uid):
     # left canvas
-    cover_right = Image.open(destination_file(domain, uid, 1))
+    cover_right = Image.open(destination_file(domain, uid, '{}-original'.format(1)))
     left_image = Image.open(destination_file(domain, uid, 2))
 
     bottom_box = (0, cover_right.size[1] - 10, cover_right.size[0], cover_right.size[1])
@@ -74,7 +83,7 @@ def create_borders(pages, domain, uid):
     left_image.save(destination_file(domain, uid, 2))
 
     # right canvas
-    cover_left = Image.open(destination_file(domain, uid, pages * 2))
+    cover_left = Image.open(destination_file(domain, uid, '{}-original'.format(pages * 2)))
     right_image = Image.open(destination_file(domain, uid, pages * 2 - 1))
 
     bottom_box = (0, cover_left.size[1] - 10, cover_left.size[0], cover_left.size[1])
@@ -90,6 +99,8 @@ def create_borders(pages, domain, uid):
     right_image.paste(right_region, (right_image.size[0] - 10, 0))
 
     right_image.save(destination_file(domain, uid, pages * 2 - 1))
+    os.remove(destination_file(domain, uid, '{}-original'.format(1)))
+    os.remove(destination_file(domain, uid, '{}-original'.format(pages * 2)))
 
 
 def create_response(destination):

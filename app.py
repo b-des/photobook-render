@@ -24,7 +24,7 @@ def previews():
     if request.args.get('width') and request.args.get('width'):
         size = {'width': request.args.get('width'), 'height': request.args.get('height')}
     else:
-        warning = 'Not specified width or/and height of book. Default value was used instead'
+        warning = 'Not specified width or/and height of book. Default value(1000x500) was used'
     if domain == '':
         return "Did'nt receive required parameter: <i>domain</i>", 400
     if uid == '':
