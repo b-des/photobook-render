@@ -12,7 +12,11 @@ options = {
 
 
 def destination_file(domain, uid, filename=None):
-    path = os.path.join(domains[domain], 'photobook/snapshots', uid)
+    try:
+        path = os.path.join(domains[domain], 'photobook/snapshots', uid)
+    except KeyError:
+        return None
+
     if not os.path.exists(path):
         os.makedirs(path)
     if filename is None:
@@ -21,19 +25,23 @@ def destination_file(domain, uid, filename=None):
 
 
 def slice_page(page, pages, domain, uid):
-    sliced = image_slicer.slice(destination_file(domain, uid, page), 2, save=False)
+    original = destination_file(domain, uid, '{}-full'.format(page))
+    sliced = image_slicer.slice(original, 2, save=False)
     if page == 1:
-        sliced[0].save(destination_file(domain, uid, pages*2))
+        sliced[0].save(destination_file(domain, uid, pages * 2))
         sliced[1].save(destination_file(domain, uid, 1))
     else:
         number = page - 2 + page
+        print(number)
         sliced[0].save(destination_file(domain, uid, number))
+        print(number + 1)
         sliced[1].save(destination_file(domain, uid, number + 1))
+    os.remove(original)
 
 
 def create_coverages(pages):
     images = [Image.open(x) for x in ['images/1.jpg', 'images/2.jpg',
-                                      'images/{}.jpg'.format(pages*2-1), 'images/{}.jpg'.format(pages*2)]]
+                                      'images/{}.jpg'.format(pages * 2 - 1), 'images/{}.jpg'.format(pages * 2)]]
     widths, heights = zip(*(i.size for i in images))
     total_width = sum(widths)
     max_height = max(heights)
@@ -71,7 +79,7 @@ def create_borders(pages, domain, uid):
 
     bottom_box = (0, cover_left.size[1] - 10, cover_left.size[0], cover_left.size[1])
     top_box = (0, 0, cover_left.size[0], 10)
-    right_box = (cover_left.size[0] - 10, 0,  cover_left.size[0], cover_left.size[1])
+    right_box = (cover_left.size[0] - 10, 0, cover_left.size[0], cover_left.size[1])
 
     bottom_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(bottom_box)))
     top_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(top_box)))
@@ -84,17 +92,34 @@ def create_borders(pages, domain, uid):
     right_image.save(destination_file(domain, uid, pages * 2 - 1))
 
 
+def create_response(destination):
+    f = []
+    for (dirpath, dirnames, filenames) in os.walk(destination):
+        [f.extend([os.path.join(destination, file)]) for file in filenames]
+        break
+    return {'data': f, 'code': 200}
+
+
 def make_previews(pages=0, uid='', domain='', size=None):
+
+    if destination_file(domain, uid) is None:
+        return {'message': "Unregistered domain name received", 'code': 400}
+
     if size is None:
         size = {'width': '1000', 'height': '500'}
     page = 1
     while page <= pages:
-        destination = destination_file(domain, uid, page)
+        destination = destination_file(domain, uid, '{}-full'.format(page))
         url = render_url.format(domain, uid, page)
         options.update(size)
-        imgkit.from_url(url, destination, options=options)
+        try:
+            imgkit.from_url(url, destination, options=options)
+        except:
+            return {'message': "Error occurred while parse url", 'code': 404}
+
         slice_page(page, pages, domain, uid)
         page = page + 1
 
     create_borders(pages, domain, uid)
-    #create_coverages()
+    return create_response(destination_file(domain, uid))
+    # create_coverages()
