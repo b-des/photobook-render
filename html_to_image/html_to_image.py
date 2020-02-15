@@ -139,7 +139,6 @@ def make_previews(pages=0, uid='', domain='', size=None):
         except:
             return {'message': "Error occurred while parse url", 'code': 404}
 
-
         slice_page(page, pages, domain, uid)
         page = page + 1
 
