@@ -57,7 +57,7 @@ def slice_page(page, pages, domain, uid):
         else:
             sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
-    #os.remove(original)
+    os.remove(original)
 
 
 def create_coverages(pages):
