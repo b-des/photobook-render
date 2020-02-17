@@ -43,8 +43,8 @@ def slice_page(page, pages, domain, uid):
 
         #sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2), quality=100)
         #sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1), quality=100)
-        sliced[0].image.save(destination_file(domain, uid, pages * 2), quality=100)
-        sliced[1].image.save(destination_file(domain, uid, 1), quality=100)
+        sliced[0].image.crop((10, 10, 500, 490)).save(destination_file(domain, uid, pages * 2), quality=100)
+        sliced[1].image.crop((0, 10, 490, 490)).save(destination_file(domain, uid, 1), quality=100)
     else:
         number = page - 2 + page
         if number != 2:
@@ -57,7 +57,7 @@ def slice_page(page, pages, domain, uid):
         else:
             sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
-    os.remove(original)
+    #os.remove(original)
 
 
 def create_coverages(pages):
