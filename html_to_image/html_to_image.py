@@ -41,8 +41,10 @@ def slice_page(page, pages, domain, uid):
         sliced[0].image.save(destination_file(domain, uid, '{}-original'.format(pages * 2)))
         sliced[1].image.save(destination_file(domain, uid, '1-original'))
 
-        sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2), quality=100)
-        sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1), quality=100)
+        #sliced[0].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, pages * 2), quality=100)
+        #sliced[1].image.crop((10, 10, 500, 500 - 10)).save(destination_file(domain, uid, 1), quality=100)
+        sliced[0].image.crop((10, 10, 500, 490)).save(destination_file(domain, uid, pages * 2), quality=100)
+        sliced[1].image.crop((0, 10, 490, 490)).save(destination_file(domain, uid, 1), quality=100)
     else:
         number = page - 2 + page
         if number != 2:
@@ -80,7 +82,7 @@ def create_borders(pages, domain, uid):
 
     bottom_box = (0, cover_right.size[1] - 10, cover_right.size[0], cover_right.size[1])
     top_box = (0, 0, cover_right.size[0], 10)
-    left_box = (0, 0, 10, cover_right.size[1])
+    left_box = (cover_right.size[0] - 10, 0, cover_right.size[0], cover_right.size[1])
 
     bottom_region = ImageOps.flip(ImageOps.mirror(cover_right.crop(bottom_box)))
     top_region = ImageOps.flip(ImageOps.mirror(cover_right.crop(top_box)))
@@ -98,7 +100,7 @@ def create_borders(pages, domain, uid):
 
     bottom_box = (0, cover_left.size[1] - 10, cover_left.size[0], cover_left.size[1])
     top_box = (0, 0, cover_left.size[0], 10)
-    right_box = (cover_left.size[0] - 10, 0, cover_left.size[0], cover_left.size[1])
+    right_box = (0, 0, cover_left.size[0] - 10, cover_left.size[1])
 
     bottom_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(bottom_box)))
     top_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(top_box)))
