@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache wkhtmltopdf
-RUN apk add --no-cache libjpeg-dev zlib1g-dev
+RUN apk add --no-cache jpeg-dev zlib-dev
 RUN pip install Pillow
 
 # install dependencies
