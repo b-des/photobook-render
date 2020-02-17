@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.7
+FROM python:3.7-alpine
 
 # set work directory
 WORKDIR /usr/src/app
@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update
-RUN apt-get -qq -y install wkhtmltopdf
-RUN apt-get -qq -y install libjpeg-dev zlib1g-dev
+
+RUN apk add --no-cache wkhtmltopdf
+RUN apk add --no-cache libjpeg-dev zlib1g-dev
 RUN pip install Pillow
 
 # install dependencies
