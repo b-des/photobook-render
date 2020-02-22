@@ -134,7 +134,13 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         size = {'width': '1000', 'height': '500'}
     page = 1
     while page <= pages:
-        destination = destination_file(domain, uid, '{}-full'.format(page))
+        # if rendering user's book
+        # save it to preview dir without slicing
+        if is_user_preview is False:
+            destination = destination_file(domain, uid, '{}-full'.format(page))
+        else:
+            destination = destination_file(domain, '%s/%s' % (uid, 'preview'), '{}-full'.format(page))
+
         url = render_url.format(domain, uid, page)
 
         options.update(size)
@@ -143,9 +149,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         except:
             return {'message': "Error occurred while parse url", 'code': 404}
 
-        slice_page(page, pages, domain, uid)
+        if is_user_preview is False:
+            slice_page(page, pages, domain, uid)
         page = page + 1
 
-    create_borders(pages, domain, uid)
+    if is_user_preview is False:
+        create_borders(pages, domain, uid)
     return create_response(destination_file(domain, uid))
-    # create_coverages()
