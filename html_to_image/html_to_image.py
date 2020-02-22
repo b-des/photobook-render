@@ -123,9 +123,22 @@ def create_response(destination, url_path):
     return {'data': f, 'code': 200}
 
 
+def to_bool(value):
+    valid = {'true': True, 't': True, '1': True,
+             'false': False, 'f': False, '0': False,
+             }
+
+    if isinstance(value, bool):
+        return value
+
+    lower_value = value.lower()
+    if lower_value in valid:
+        return valid[lower_value]
+    else:
+        raise ValueError('invalid literal for boolean: "%s"' % value)
+
+
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
-    print("Is user preview:")
-    print(is_user_preview)
 
     if destination_file(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
