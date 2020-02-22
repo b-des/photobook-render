@@ -19,6 +19,7 @@ def previews():
     domain = request.args.get('domain')
     uid = request.args.get('uid')
     pages = request.args.get('pages')
+    is_user_preview = request.args.get('userPreview')
     warning = ''
     size = None
     if request.args.get('width') and request.args.get('width'):
@@ -33,7 +34,7 @@ def previews():
         return "Did'nt receive required parameter: <i>pages</i>", 400
     print(domain)
     #pprint(vars(request))
-    response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size)
+    response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_user_preview)
     response.update({'warning': warning})
     return jsonify(response)
 

@@ -123,7 +123,9 @@ def create_response(destination):
     return {'data': f, 'code': 200}
 
 
-def make_previews(pages=0, uid='', domain='', size=None):
+def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
+    print("Is user preview:")
+    print(is_user_preview)
 
     if destination_file(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
