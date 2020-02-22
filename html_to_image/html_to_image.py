@@ -139,7 +139,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         if is_user_preview is False:
             destination = destination_file(domain, uid, '{}-full'.format(page))
         else:
-            destination = destination_file(domain, '%s/%s' % (uid, 'preview'), '{}-full'.format(page))
+            destination = destination_file(domain, '%s/%s' % (uid, 'preview'), page)
 
         url = render_url.format(domain, uid, page)
 
