@@ -151,8 +151,13 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
+
         page = page + 1
 
+    # if is user's book render
+    # don't create borders
     if is_user_preview is False:
         create_borders(pages, domain, uid)
-    return create_response(destination_file(domain, uid))
+        return create_response(destination_file(domain, uid))
+    else:
+        return create_response(destination_file(domain, '%s/%s' % (uid, 'preview')))
