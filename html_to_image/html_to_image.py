@@ -118,7 +118,7 @@ def create_borders(pages, domain, uid):
 def create_response(destination, url_path):
     f = []
     for (dirpath, dirnames, filenames) in os.walk(destination):
-        [f.extend([os.path.join('test', file)]) for file in filenames]
+        [f.extend([os.path.join(url_path, file)]) for file in filenames]
         break
     return {'data': f, 'code': 200}
 
@@ -160,10 +160,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         create_borders(pages, domain, uid)
         return create_response(
             destination_file(domain, uid),
-            destination_file(domain, '%s/%s' % (uid, 'preview'), False)
+            destination_file(domain, '%s/%s' % (uid, 'preview'), None, False)
         )
     else:
         return create_response(
             destination_file(domain, '%s/%s' % (uid, 'preview')),
-            destination_file(domain, '%s/%s' % (uid, 'preview'), False)
+            destination_file(domain, '%s/%s' % (uid, 'preview'), None, False)
         )
