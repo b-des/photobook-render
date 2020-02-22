@@ -118,7 +118,7 @@ def create_borders(pages, domain, uid):
 def create_response(destination, url_path):
     f = []
     for (dirpath, dirnames, filenames) in os.walk(destination):
-        [f.extend([os.path.join(url_path, file)]) for file in filenames]
+        [f.extend([os.path.join('test', file)]) for file in filenames]
         break
     return {'data': f, 'code': 200}
 
