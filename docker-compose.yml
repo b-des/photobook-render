@@ -3,6 +3,7 @@ version: '3.7'
 services:
   photobook:
     build: .
+    image: photobook-render:latest
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     restart: always
     volumes:
