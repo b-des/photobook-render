@@ -173,7 +173,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         create_borders(pages, domain, uid)
         return create_response(
             destination_file(domain, uid),
-            destination_file(domain, '%s/%s' % (uid, 'preview'), None, False)
+            destination_file(domain, uid, None, False)
         )
     else:
         return create_response(
