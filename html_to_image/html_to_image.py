@@ -144,7 +144,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         return {'message': "Unregistered domain name received", 'code': 400}
 
     if size is None:
-        size = {'width': '2000', 'height': '100'}
+        size = {'width': '2000', 'height': '1000'}
     page = 1
     while page <= pages:
         # if rendering user's book
