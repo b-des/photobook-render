@@ -11,7 +11,7 @@ options = {
     # 'quiet': '',
     'quality': 100,
     'images': '',
-    'zoom': 3.1,
+    'zoom': 1,
     'format': 'jpg'
 }
 
@@ -59,7 +59,7 @@ def slice_page(page, pages, domain, uid):
         else:
             sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
-    #os.remove(original)
+    # os.remove(original)
 
 
 def create_coverages(pages):
@@ -141,7 +141,6 @@ def to_bool(value):
 
 
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
-
     if destination_file(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
@@ -159,10 +158,14 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = render_url.format(domain, uid, page)
 
         options.update(size)
-        #try:
-        imgkit.from_url(url, destination, options=options)
-        #except:
-          #  return {'message': "Error occurred while parse url", 'code': 404}
+        try:
+            imgkit.from_url(url, destination, options=options)
+        except:
+            return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
+
+        image = Image.open(destination)
+        image = image.resize((1000, 500))
+        image.save(destination)
 
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
