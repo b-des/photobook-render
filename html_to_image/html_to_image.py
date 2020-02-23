@@ -165,7 +165,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         image = Image.open(destination)
         image = image.resize((1000, 500))
-        image.save(destination)
+        image.save(destination, quality=100, dpi=(600, 600))
 
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
