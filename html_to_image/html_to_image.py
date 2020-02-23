@@ -60,6 +60,7 @@ def slice_page(page, pages, domain, uid):
             sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
     os.remove(original)
+    print('Progress: {}%'.format(int(100/pages*page)))
 
 
 def create_coverages(pages):
