@@ -158,10 +158,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = render_url.format(domain, uid, page)
 
         options.update(size)
-        try:
-            imgkit.from_url(url, destination, options=options)
-        except:
-            return {'message': "Error occurred while parse url", 'code': 404}
+        #try:
+        imgkit.from_url(url, destination, options=options)
+        #except:
+          #  return {'message': "Error occurred while parse url", 'code': 404}
 
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
