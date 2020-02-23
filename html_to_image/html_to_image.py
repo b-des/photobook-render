@@ -10,6 +10,7 @@ options = {
     'window-status': 'ready',
     # 'quiet': '',
     'quality': 100,
+    'dpi': 1200,
     'format': 'jpg'
 }
 
