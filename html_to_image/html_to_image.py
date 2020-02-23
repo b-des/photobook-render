@@ -59,7 +59,7 @@ def slice_page(page, pages, domain, uid):
         else:
             sliced[1].image.save(destination_file(domain, uid, number + 1), quality=100)
 
-    # os.remove(original)
+    os.remove(original)
 
 
 def create_coverages(pages):
@@ -164,8 +164,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         image = Image.open(destination)
-        image = image.resize((1000, 500))
-        image.save(destination, quality=100, dpi=(600, 600))
+        image.resize((1000, 500)).save(destination, quality=100, dpi=(600, 600))
 
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
