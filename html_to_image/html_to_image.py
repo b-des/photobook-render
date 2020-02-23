@@ -11,7 +11,7 @@ options = {
     # 'quiet': '',
     'quality': 100,
     'images': '',
-    'zoom': 2,
+    'zoom': 3.1,
     'format': 'jpg'
 }
 
