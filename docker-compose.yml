@@ -5,7 +5,7 @@ services:
     build: .
     image: photobook-render:latest
     container_name: photobook-render
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
+    command: gunicorn --bind 0.0.0.0:5000 wsgi:app --timeout 90
     restart: always
     volumes:
       - /var/www/demonstration/data/www/pechat.photo/:/var/www/demonstration/data/www/pechat.photo/
