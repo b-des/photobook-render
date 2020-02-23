@@ -8,7 +8,7 @@ render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&p
 
 options = {
     'window-status': 'ready',
-    # 'quiet': '',
+    'quiet': '',
     'quality': 100,
     'images': '',
     'zoom': 1,
