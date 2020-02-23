@@ -3,6 +3,7 @@ import imgkit
 from PIL import Image, ImageOps
 import image_slicer
 from domain_dict import domains
+import sys
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 
@@ -61,6 +62,8 @@ def slice_page(page, pages, domain, uid):
 
     os.remove(original)
     print('Progress: {}%'.format(int(100/pages*page)))
+    sys.stdout.write("\033[F")
+    sys.stdout.write("\033[K")
 
 
 def create_coverages(pages):
