@@ -162,6 +162,8 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = render_url.format(domain, uid, page)
 
         options.update(size)
+
+        print('Destination: {}'.format(destination))
         try:
             imgkit.from_url(url, destination, options=options)
         except:
