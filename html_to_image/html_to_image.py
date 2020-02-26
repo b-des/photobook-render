@@ -63,7 +63,7 @@ def slice_page(page, pages, domain, uid):
     os.remove(original)
     print('Progress: {}%'.format(int(100/pages*page)))
     sys.stdout.write("\033[F")
-    sys.stdout.write("\033[K")
+    #sys.stdout.write("\033[K")
 
 
 def create_coverages(pages):
@@ -163,7 +163,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         options.update(size)
 
-        print('Destination: {}'.format(destination))
+        #print('Destination: {}'.format(destination))
         try:
             imgkit.from_url(url, destination, options=options)
         except:
