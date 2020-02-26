@@ -9,5 +9,16 @@ services:
     restart: always
     volumes:
       - /var/www/demonstration/data/www/pechat.photo/:/var/www/demonstration/data/www/pechat.photo/
+      - /var/www/casycomua/data/www/casy.com.ua:/var/www/casycomua/data/www/casy.com.ua
+      - /var/www/digitalfotoua/data/www/digitalfoto.pp.ua:/var/www/digitalfotoua/data/www/digitalfoto.pp.ua
+      - /var/www/fotocarte/data/www/evolvestudio.md:/var/www/fotocarte/data/www/evolvestudio.md
+      - /var/www/foto124/data/www/foto124.ru:/var/www/foto124/data/www/foto124.ru
+      - /var/www/knigoboomplus/data/www/knigoboomplus.ru:/var/www/knigoboomplus/data/www/knigoboomplus.ru
+      - /var/www/borovodessa/data/www/memory-moments.online:/var/www/borovodessa/data/www/memory-moments.online
+      - /var/www/photolier/data/www/online.photolier.ru:/var/www/photolier/data/www/online.photolier.ru
+      - /var/www/pechatfotoonline/data/www/pechatfotoonline.ru:/var/www/pechatfotoonline/data/www/pechatfotoonline.ru
+      - /var/www/photomich/data/www/photo-mich.ru:/var/www/photomich/data/www/photo-mich.ru
+      - /var/www/urakrasnodar/data/www/photopechat23.ru:/var/www/urakrasnodar/data/www/photopechat23.ru
+      - /var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb:/var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb
     ports:
-      - 7000:5000
+      - 7000-7012:5000
