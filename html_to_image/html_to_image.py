@@ -63,7 +63,7 @@ def slice_page(page, pages, domain, uid):
     os.remove(original)
     print('Progress: {}%'.format(int(100/pages*page)))
     sys.stdout.write("\033[F")
-    #sys.stdout.write("\033[K")
+    sys.stdout.write("\033[K")
 
 
 def create_coverages(pages):
