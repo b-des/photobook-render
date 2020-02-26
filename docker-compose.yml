@@ -4,7 +4,7 @@ services:
   photobook:
     build: .
     image: photobook-render:latest
-    container_name: photobook-render-${AGENT_NUMBER}
+    container_name: ${NAME}
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app --timeout 90
     restart: always
     volumes:
