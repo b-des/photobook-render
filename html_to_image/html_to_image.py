@@ -241,7 +241,7 @@ def render_book(uid='', domain='', size=None, pages=0):
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         image = Image.open(destination_file)
-        os.remove(destination_file)
+       # os.remove(destination_file)
         #.resize((size['width'], size['height']))
         image.save(destination_file, quality=100, dpi=(600, 600))
         print('Rendering progress: {}%'.format(int(100 / pages * page)))
