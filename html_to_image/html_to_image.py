@@ -234,8 +234,7 @@ def render_book(uid='', domain='', size=None, pages=0):
 
         url = render_url.format(domain, uid, page)
         url = url + '&isFullRender=true'
-        options.update(size)
-        print(options)
+        #options.update(size)
         try:
             imgkit.from_url(url, destination_file, options=options)
         except:
@@ -250,3 +249,7 @@ def render_book(uid='', domain='', size=None, pages=0):
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
         page = page + 1
+        return create_response(
+            create_destination_file_for_preview(domain, uid),
+            create_destination_file_for_preview(domain, uid, None, False)
+        )
