@@ -228,14 +228,16 @@ def render_book(uid='', domain='', size=None, pages=0):
 
     if size is None:
         size = default_size
+    # add offset for pattern's borders
+    size['width'] += 200
+    size['height'] += 100
     page = 1
     while page <= pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
-        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'], size['height'])
-        size['width'] += 200
-        size['height'] += 100
+        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - 200, size['height'] - 100)
+
         options.update(size)
         try:
             imgkit.from_url(url, destination_file, options=options)
@@ -245,7 +247,6 @@ def render_book(uid='', domain='', size=None, pages=0):
 
         image = Image.open(destination_file)
         os.remove(destination_file)
-        #.resize((size['width'], size['height']))
         image.save(destination_file, quality=100, dpi=(600, 600))
         print('Rendering progress: {}%'.format(int(100 / pages * page)))
         sys.stdout.write("\033[F")
