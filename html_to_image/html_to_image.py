@@ -249,7 +249,7 @@ def render_book(uid='', domain='', size=None, pages=0):
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
         page = page + 1
-        return create_response(
-            create_destination_file_for_preview(domain, uid),
-            create_destination_file_for_preview(domain, uid, None, False)
-        )
+    return create_response(
+        create_destination_file_for_render(domain, uid),
+        create_destination_file_for_render(domain, uid, None, False)
+    )
