@@ -230,7 +230,7 @@ def render_book(uid='', domain='', size=None, pages=0):
         size = default_size
     page = 1
     while page <= pages:
-        destination_file = create_destination_file_for_render(domain, uid, page)
+        destination_file = create_destination_file_for_preview(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
        # url = url + '&isFullRender=true'
