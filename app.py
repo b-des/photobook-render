@@ -57,7 +57,7 @@ def render():
         return "Did'nt receive required parameter: <i>uid</i>", 400
     if pages == '':
         return "Did'nt receive required parameter: <i>pages</i>", 400
-    print(domain)
+    print(request)
 
     response = render_book(pages=int(pages), domain=domain, uid=uid, size=size)
     response.update({'warning': warning})
