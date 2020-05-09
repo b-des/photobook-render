@@ -21,4 +21,4 @@ services:
       - /var/www/urakrasnodar/data/www/photopechat23.ru:/var/www/urakrasnodar/data/www/photopechat23.ru
       - /var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb:/var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb
     ports:
-      - 7000-7012:5000
+      - 7006:5000
