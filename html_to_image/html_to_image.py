@@ -239,7 +239,7 @@ def render_book(uid='', domain='', size=None, pages=0):
         try:
             imgkit.from_url(url, destination_file, options=options)
         except:
-            print("Oops!", sys.exc_info()[0], "occured.")
+            print(sys.exc_info()[0])
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         image = Image.open(destination_file)
