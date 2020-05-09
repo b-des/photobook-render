@@ -230,10 +230,10 @@ def render_book(uid='', domain='', size=None, pages=0):
         size = default_size
     page = 1
     while page <= pages:
-        destination_file = create_destination_file_for_render(domain, '%s/%s' % (uid, 'preview'), page)
+        destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
-        url = url + '&isFullRender=true'
+       # url = url + '&isFullRender=true'
         print(destination_file)
         options.update(size)
         try:
