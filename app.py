@@ -23,7 +23,7 @@ def previews():
     warning = ''
     size = None
     if request.args.get('width') and request.args.get('width'):
-        size = {'width': request.args.get('width'), 'height': request.args.get('height')}
+        size = {'width': int(request.args.get('width')), 'height': int(request.args.get('height'))}
     else:
         warning = 'Not specified width or/and height of book. Default value(1000x500) was used'
     if domain == '':
@@ -48,7 +48,7 @@ def render():
     warning = ''
     size = None
     if request.args.get('width') and request.args.get('width'):
-        size = {'width': request.args.get('width'), 'height': request.args.get('height')}
+        size = {'width': int(request.args.get('width')), 'height': int(request.args.get('height'))}
     else:
         warning = 'Not specified width or/and height of book. Default value(1000x500) was used'
     if domain == '':
