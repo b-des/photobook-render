@@ -233,7 +233,7 @@ def render_book(uid='', domain='', size=None, pages=0):
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
-        url = url + '&isFullRender=true'
+        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'], size['height'])
         size['width'] += 200
         size['height'] += 100
         options.update(size)
