@@ -234,6 +234,7 @@ def render_book(uid='', domain='', size=None, pages=0):
 
         url = render_url.format(domain, uid, page)
         url = url + '&isFullRender=true'
+        print(url)
         options.update(size)
         try:
             imgkit.from_url(url, destination_file, options=options)
