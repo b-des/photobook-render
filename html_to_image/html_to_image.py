@@ -230,22 +230,23 @@ def render_book(uid='', domain='', size=None, pages=0):
         size = default_size
     page = 1
     while page <= pages:
-        #destination_file = create_destination_file_for_preview(domain, uid, page)
-        destination = create_destination_file_for_preview(domain, uid, '{}-full'.format(page))
+        destination_file = create_destination_file_for_render(domain, uid, page)
+
         url = render_url.format(domain, uid, page)
        # url = url + '&isFullRender=true'
-        print(destination)
+        print(size)
         options.update(size)
         try:
-            imgkit.from_url(url, destination, options=options)
+            imgkit.from_url(url, destination_file, options=options)
         except:
             print(sys.exc_info()[0])
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
-        image = Image.open(destination)
+        image = Image.open(destination_file)
        # os.remove(destination_file)
         #.resize((size['width'], size['height']))
-        image.save(destination, quality=100, dpi=(600, 600))
+        image.save(destination_file, quality=100, dpi=(600, 600))
         print('Rendering progress: {}%'.format(int(100 / pages * page)))
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
+        page = page + 1
