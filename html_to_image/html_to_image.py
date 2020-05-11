@@ -222,21 +222,25 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         )
 
 
-def render_book(uid='', domain='', size=None, pages=0):
+def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
     if size is None:
         size = default_size
+
+    border_offset = 100
+    if no_border:
+        border_offset = 0
     # add offset for pattern's borders
-    size['width'] += 200
-    size['height'] += 100
+    size['width'] += border_offset * 2
+    size['height'] += border_offset
     page = 1
     while page <= pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
-        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - 200, size['height'] - 100)
+        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - border_offset * 2, size['height'] - border_offset)
 
         options.update(size)
         try:

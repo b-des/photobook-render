@@ -45,6 +45,7 @@ def render():
     domain = request.args.get('domain')
     uid = request.args.get('uid')
     pages = request.args.get('pages')
+    no_border = to_bool(request.args.get('no_border'))
     warning = ''
     size = None
     if request.args.get('width') and request.args.get('width'):
@@ -58,7 +59,7 @@ def render():
     if pages == '':
         return "Did'nt receive required parameter: <i>pages</i>", 400
 
-    response = render_book(pages=int(pages), domain=domain, uid=uid, size=size)
+    response = render_book(pages=int(pages), domain=domain, uid=uid, size=size, no_border=no_border)
     response.update({'warning': warning})
     return jsonify(response)
 
