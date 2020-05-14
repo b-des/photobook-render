@@ -180,7 +180,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
     if size is None:
         size = default_size
-    page = 1
+    page = 0
     while page <= pages:
         # if rendering user's book
         # save it to preview dir without slicing
@@ -235,13 +235,12 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     # add offset for pattern's borders
     size['width'] += border_offset * 2
     size['height'] += border_offset
-    page = 1
+    page = 0
     while page <= pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
         url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - border_offset * 2, size['height'] - border_offset)
-
         options.update(size)
         try:
             imgkit.from_url(url, destination_file, options=options)
