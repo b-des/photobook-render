@@ -182,8 +182,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         size = default_size
     page = 1
     while page <= pages:
-        # if rendering user's book
-        # save it to preview dir without slicing
+
         if is_user_preview is False:
             destination = create_destination_file_for_preview(domain, uid, '{}-full'.format(page))
         else:
@@ -200,8 +199,9 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         image = Image.open(destination)
-        image.resize((1000, 500)).save(destination, quality=100, dpi=(600, 600))
-
+        image.save(destination, quality=100, dpi=(600, 600))
+        # if rendering user's book
+        # save it to preview dir without slicing
         if is_user_preview is False:
             slice_page(page, pages, domain, uid)
 
