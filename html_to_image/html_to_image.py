@@ -50,34 +50,41 @@ def slice(path):
     :return:
     '''
     img = Image.open(path)
-    res = (img.crop((0, 0, 500, 500)), img.crop((500, 0, 1000, 500)))
+    width, height = img.size
+    res = (img.crop((0, 0, width / 2, height)), img.crop((width / 2, 0, width, height)))
     return res
 
 
 def slice_page(page, pages, domain, uid):
     original = create_destination_file_for_preview(domain, uid, '{}-full'.format(page))
     sliced = image_slicer.slice(original, 2, save=False)
+
     slice(original)
+    width, height = sliced[0].image.size
+    border_size = int(height - height / 1.02040)
     if page == 1:
         sliced[0].image.save(create_destination_file_for_preview(domain, uid, '{}-original'.format(pages * 2)))
         sliced[1].image.save(create_destination_file_for_preview(domain, uid, '1-original'))
 
         # sliced[0].image.crop((10, 10, 500, 500 - 10)).save(create_destination_file_for_preview(domain, uid, pages * 2), quality=100)
         # sliced[1].image.crop((10, 10, 500, 500 - 10)).save(create_destination_file_for_preview(domain, uid, 1), quality=100)
-        sliced[0].image.crop((10, 10, 500, 490)).save(create_destination_file_for_preview(domain, uid, pages * 2),
-                                                      quality=100)
-        sliced[1].image.crop((0, 10, 490, 490)).save(create_destination_file_for_preview(domain, uid, 1), quality=100)
+        sliced[0].image.crop((border_size, border_size, width, height - border_size)) \
+            .save(create_destination_file_for_preview(domain, uid, pages * 2), quality=100)
+
+        sliced[1].image.crop((0, border_size, width - border_size, height - border_size)) \
+            .save(create_destination_file_for_preview(domain, uid, 1), quality=100)
+
     else:
         number = page - 2 + page
         if number != 2:
-            sliced[0].image.crop((10, 10, 500, 490)).save(create_destination_file_for_preview(domain, uid, number),
-                                                          quality=100)
+            sliced[0].image.crop((border_size, border_size, width, height - border_size)).save(
+                create_destination_file_for_preview(domain, uid, number), quality=100)
         else:
             sliced[0].image.save(create_destination_file_for_preview(domain, uid, number), quality=100)
 
         if number + 1 != pages * 2 - 1:
-            sliced[1].image.crop((0, 10, 490, 490)).save(create_destination_file_for_preview(domain, uid, number + 1),
-                                                         quality=100)
+            sliced[1].image.crop((0, border_size, width - border_size, height - border_size)).save(
+                create_destination_file_for_preview(domain, uid, number + 1), quality=100)
         else:
             sliced[1].image.save(create_destination_file_for_preview(domain, uid, number + 1), quality=100)
 
@@ -104,18 +111,20 @@ def create_coverages(pages):
 
 def create_borders(pages, domain, uid):
     # left canvas
+
     cover_right = Image.open(create_destination_file_for_preview(domain, uid, '{}-original'.format(1)))
     left_image = Image.open(create_destination_file_for_preview(domain, uid, 2))
 
-    bottom_box = (0, cover_right.size[1] - 10, cover_right.size[0], cover_right.size[1])
-    top_box = (0, 0, cover_right.size[0], 10)
-    left_box = (cover_right.size[0] - 10, 0, cover_right.size[0], cover_right.size[1])
+    border_size = int(cover_right.size[1] - cover_right.size[1] / 1.02040)
+    bottom_box = (0, cover_right.size[1] - border_size, cover_right.size[0], cover_right.size[1])
+    top_box = (0, 0, cover_right.size[0], border_size)
+    left_box = (cover_right.size[0] - border_size - 5, 0, cover_right.size[0], cover_right.size[1])
 
     bottom_region = ImageOps.flip(ImageOps.mirror(cover_right.crop(bottom_box)))
     top_region = ImageOps.flip(ImageOps.mirror(cover_right.crop(top_box)))
     left_region = cover_right.crop(left_box)
 
-    left_image.paste(bottom_region, (0, left_image.size[1] - 10))
+    left_image.paste(bottom_region, (0, left_image.size[1] - border_size))
     left_image.paste(top_region, (0, 0))
     left_image.paste(left_region, (0, 0))
 
@@ -125,17 +134,17 @@ def create_borders(pages, domain, uid):
     cover_left = Image.open(create_destination_file_for_preview(domain, uid, '{}-original'.format(pages * 2)))
     right_image = Image.open(create_destination_file_for_preview(domain, uid, pages * 2 - 1))
 
-    bottom_box = (0, cover_left.size[1] - 10, cover_left.size[0], cover_left.size[1])
-    top_box = (0, 0, cover_left.size[0], 10)
-    right_box = (0, 0, cover_left.size[0] - 10, cover_left.size[1])
+    bottom_box = (0, cover_left.size[1] - border_size, cover_left.size[0], cover_left.size[1])
+    top_box = (0, 0, cover_left.size[0], border_size)
+    right_box = (0, 0, cover_left.size[0] - border_size - 5, cover_left.size[1])
 
     bottom_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(bottom_box)))
     top_region = ImageOps.flip(ImageOps.mirror(cover_left.crop(top_box)))
     right_region = cover_left.crop(right_box)
 
-    right_image.paste(bottom_region, (0, right_image.size[1] - 10))
+    right_image.paste(bottom_region, (0, right_image.size[1] - border_size))
     right_image.paste(top_region, (0, 0))
-    right_image.paste(right_region, (right_image.size[0] - 10, 0))
+    right_image.paste(right_region, (right_image.size[0] - border_size - 5, 0))
 
     right_image.save(create_destination_file_for_preview(domain, uid, pages * 2 - 1), quality=100)
     os.remove(create_destination_file_for_preview(domain, uid, '{}-original'.format(1)))
@@ -200,7 +209,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         image = Image.open(destination)
-        image.resize((1000, 500)).save(destination, quality=100, dpi=(600, 600))
+        image.save(destination, quality=100, dpi=(600, 600))
         # if rendering user's book
         # save it to preview dir without slicing
         if is_user_preview is False:
@@ -241,7 +250,8 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
-        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - border_offset * 2, size['height'] - border_offset)
+        url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - border_offset * 2,
+                                                                   size['height'] - border_offset)
         options.update(size)
         try:
             imgkit.from_url(url, destination_file, options=options)
