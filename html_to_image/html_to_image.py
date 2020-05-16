@@ -189,6 +189,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             destination = create_destination_file_for_preview(domain, '%s/%s' % (uid, 'preview'), page)
 
         url = render_url.format(domain, uid, page - 1)
+        url = url + '&width={}&height={}'.format(size['width'], size['height'])
 
         options.update(size)
 
