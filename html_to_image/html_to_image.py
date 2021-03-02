@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import imgkit
 from PIL import Image, ImageOps
 import image_slicer
@@ -19,12 +19,16 @@ options = {
 
 def create_destination_file_for_preview(domain, uid, filename=None, include_os_path=True):
     try:
-        path = os.path.join(domains[domain] if include_os_path is True else domain, 'photobook/snapshots', uid)
+        path = os.path.join(domains[domain] if include_os_path is True else domain, 'image/photobook/snapshots', uid)
     except KeyError:
         return None
 
-    if not os.path.exists(path):
-        os.makedirs(path)
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+            os.chmod(path, 0o777)
+    except:
+        pass
     if filename is None:
         return path
     return os.path.join(path, '{}.jpg'.format(filename))
@@ -38,6 +42,7 @@ def create_destination_file_for_render(domain, uid, filename=None, include_os_pa
 
     if not os.path.exists(path):
         os.makedirs(path)
+        os.chmod(path, 0o777)
     if filename is None:
         return path
     return os.path.join(path, '{}.jpg'.format(filename))
@@ -64,14 +69,15 @@ def slice_page(page, pages, domain, uid):
     border_size = int(height - height / 1.02040)
     if page == 1:
         sliced[0].image.save(create_destination_file_for_preview(domain, uid, '{}-original'.format(pages * 2)))
-        sliced[1].image.save(create_destination_file_for_preview(domain, uid, '1-original'))
+        sliced[1].image.crop((0, 0, width - 3, height)) \
+            .save(create_destination_file_for_preview(domain, uid, '1-original'))
 
         # sliced[0].image.crop((10, 10, 500, 500 - 10)).save(create_destination_file_for_preview(domain, uid, pages * 2), quality=100)
         # sliced[1].image.crop((10, 10, 500, 500 - 10)).save(create_destination_file_for_preview(domain, uid, 1), quality=100)
-        sliced[0].image.crop((border_size, border_size, width, height - border_size)) \
+        sliced[0].image.crop((0, 0, width, height - 0)) \
             .save(create_destination_file_for_preview(domain, uid, pages * 2), quality=100)
 
-        sliced[1].image.crop((0, border_size, width - border_size, height - border_size)) \
+        sliced[1].image.crop((0, 0, width - 3, height - 0)) \
             .save(create_destination_file_for_preview(domain, uid, 1), quality=100)
 
     else:
@@ -90,23 +96,8 @@ def slice_page(page, pages, domain, uid):
 
     os.remove(original)
     print('Progress: {}%'.format(int(100 / pages * page)))
-    sys.stdout.write("\033[F")
-    sys.stdout.write("\033[K")
-
-
-def create_coverages(pages):
-    images = [Image.open(x) for x in ['images/1.jpg', 'images/2.jpg',
-                                      'images/{}.jpg'.format(pages * 2 - 1), 'images/{}.jpg'.format(pages * 2)]]
-    widths, heights = zip(*(i.size for i in images))
-    total_width = sum(widths)
-    max_height = max(heights)
-    new_im = Image.new('RGB', (total_width, max_height))
-    x_offset = 0
-    for im in images:
-        new_im.paste(im, (x_offset, 0))
-        x_offset += im.size[0]
-
-    new_im.save('images/book-covers.jpg')
+    #sys.stdout.write("\033[F")
+    #sys.stdout.write("\033[K")
 
 
 def create_borders(pages, domain, uid):
@@ -201,8 +192,8 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = url + '&width={}&height={}'.format(size['width'], size['height'])
 
         options.update(size)
-
-        # print('Destination: {}'.format(destination))
+        print('Create request to {}'.format(url))
+        imgkit.from_url(url, destination, options=options)
         try:
             imgkit.from_url(url, destination, options=options)
         except:
@@ -210,6 +201,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         image = Image.open(destination)
         image.save(destination, quality=100, dpi=(600, 600))
+        os.chmod(destination, 0o777)
         # if rendering user's book
         # save it to preview dir without slicing
         if is_user_preview is False:
@@ -235,6 +227,14 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
+
+    try:
+        path = os.path.join(domains[domain], 'image/photobook/renders', uid)
+    except KeyError:
+        return None
+
+    if os.path.exists(path):
+        shutil.rmtree(path)
 
     if size is None:
         size = default_size
@@ -262,10 +262,12 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         image = Image.open(destination_file)
         os.remove(destination_file)
         image.save(destination_file, quality=100, dpi=(600, 600))
+        os.chmod(destination_file, 0o777)
         print('Rendering progress: {}%'.format(int(100 / pages * page)))
-        sys.stdout.write("\033[F")
-        sys.stdout.write("\033[K")
+        #sys.stdout.write("\033[F")
+        #sys.stdout.write("\033[K")
         page = page + 1
+    print('Rendering progress: {}%'.format(100))
     return create_response(
         create_destination_file_for_render(domain, uid),
         create_destination_file_for_render(domain, uid, None, False)

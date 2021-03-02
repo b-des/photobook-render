@@ -3,6 +3,7 @@ from pprint import pprint
 from html_to_image import make_previews, render_book, to_bool
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS, cross_origin
+from threading import Thread
 
 app = Flask(__name__, template_folder='./web')
 CORS(app)
@@ -32,7 +33,7 @@ def previews():
         return "Did'nt receive required parameter: <i>uid</i>", 400
     if pages == '':
         return "Did'nt receive required parameter: <i>pages</i>", 400
-    print(domain)
+    print('Create previews for {}, uid: {}'.format(domain, uid))
 
     response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_users_book)
     response.update({'warning': warning})
@@ -59,9 +60,14 @@ def render():
     if pages == '':
         return "Did'nt receive required parameter: <i>pages</i>", 400
 
-    response = render_book(pages=int(pages), domain=domain, uid=uid, size=size, no_border=no_border)
-    response.update({'warning': warning})
-    return jsonify(response)
+    if request.args.get('redirectUrl') is not None:
+        thread = Thread(target=render_book, kwargs={'pages': int(pages), 'domain': domain, 'uid': uid, 'size': size, 'no_border': no_border})
+        thread.start()
+        return render_template("result.html", data=[], redirect=request.args.get('redirectUrl'))
+    else:
+        response = render_book(pages=int(pages), domain=domain, uid=uid, size=size, no_border=no_border)
+        response.update({'warning': warning})
+        return jsonify(response)
 
 
 if __name__ == '__main__':
