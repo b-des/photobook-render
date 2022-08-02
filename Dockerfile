@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update
+RUN apt-get --allow-releaseinfo-change update
 RUN apt-get -qq -y install wkhtmltopdf
 RUN pip install Pillow
 
@@ -15,7 +15,7 @@ RUN pip install Pillow
 # We need wget to set up the PPA and xvfb to have a virtual screen and unzip to install the Chromedriver
 RUN apt-get install -y wget unzip
 
-RUN apt-get update && apt-get install xvfb
+RUN apt-get --allow-releaseinfo-change update && apt-get install xvfb
 
 # install google chrome
 #download and install chrome
