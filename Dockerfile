@@ -15,7 +15,7 @@ RUN pip install Pillow
 # We need wget to set up the PPA and xvfb to have a virtual screen and unzip to install the Chromedriver
 RUN apt-get install -y wget unzip
 
-RUN apt-get update && apt-get install -y xvfb
+RUN apt-get update && apt-get install xvfb
 
 # install google chrome
 #download and install chrome
