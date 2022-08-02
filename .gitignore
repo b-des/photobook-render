@@ -2,6 +2,8 @@
 images
 venv
 env
+logs/*
+public/*
 docker-compose.yml
 domain_dict.py
 __pycache__

@@ -1,9 +1,31 @@
+import logging
+import os
 import threading
-from pprint import pprint
+from logging.handlers import TimedRotatingFileHandler
+
+import config
 from html_to_image import make_previews, render_book, to_bool
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS, cross_origin
 from threading import Thread
+
+# set up logger
+isExist = os.path.exists(config.LOG_DIR)
+if not isExist:
+    os.makedirs(config.LOG_DIR)
+
+handler = TimedRotatingFileHandler(config.LOG_FILE,
+                                   when="midnight",
+                                   backupCount=5)
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s]: {} %(levelname)s %(message)s'.format(os.getpid()),
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    handlers=[handler, logging.StreamHandler()])
+
+logger = logging.getLogger()
+logger.info(f'Starting app in {config.APP_ENV} environment')
+logger.info(f"DOMAINS_DICT_FILE: {config.DOMAINS_DICT_FILE}")
+
 
 app = Flask(__name__, template_folder='./web')
 CORS(app)
@@ -65,10 +87,11 @@ def render():
         thread.start()
         return render_template("result.html", data=[], redirect=request.args.get('redirectUrl'))
     else:
+        print("render_book")
         response = render_book(pages=int(pages), domain=domain, uid=uid, size=size, no_border=no_border)
         response.update({'warning': warning})
         return jsonify(response)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=8070)

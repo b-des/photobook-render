@@ -5,38 +5,12 @@ services:
     build: .
     image: photobook-render:latest
     container_name: ${NAME}
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app --workers 8 --threads 8 -k gthread --timeout 180
+    command: gunicorn --bind 0.0.0.0:5000 wsgi:app --workers 1 --threads 1 -k gthread --timeout 180
     restart: always
+    environment:
+      - DOMAINS_DICT_PATH=domains.json
+      - APP_ENV="production"
     volumes:
-      - /var/www/demonstration/data/www/pechat.photo/:/var/www/demonstration/data/www/pechat.photo/
-      - /var/www/casycomua/data/www/casy.com.ua:/var/www/casycomua/data/www/casy.com.ua
-      - /var/www/digitalfotoua/data/www/digitalfoto.pp.ua:/var/www/digitalfotoua/data/www/digitalfoto.pp.ua
-      - /var/www/admin/data/www/gift-photo.com/:/var/www/admin/data/www/gift-photo.com/
-      - /var/www/foto124/data/www/foto124.ru/:/var/www/foto124/data/www/foto124.ru/
-      - /var/www/borovodessa/data/www/memory-moments.online:/var/www/borovodessa/data/www/memory-moments.online/
-      - /var/www/photolier/data/www/online.photolier.ru:/var/www/photolier/data/www/online.photolier.ru/
-      - /var/www/pechatfotoonline/data/www/pechatfotoonline.ru:/var/www/pechatfotoonline/data/www/pechatfotoonline.ru/
-      - /var/www/photomich/data/www/photo-mich.ru:/var/www/photomich/data/www/photo-mich.ru/
-      - /var/www/urakrasnodar/data/www/photopechat23.ru:/var/www/urakrasnodar/data/www/photopechat23.ru/
-      - /var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb:/var/www/admin/data/www/xn--80aj0aafqej6a4c.xn--80asehdb/
-      - /var/www/konigfoto/data/www/konigfoto.ru:/var/www/konigfoto/data/www/konigfoto.ru/
-      - /var/www/antares/data/www/color-foto.ru:/var/www/antares/data/www/color-foto.ru/
-      - /var/www/2kadra/data/www/2kadra-foto.ru/:/var/www/2kadra/data/www/2kadra-foto.ru/
-      - /var/www/fotoprintperm/data/www/fotoprintperm.ru/:/var/www/fotoprintperm/data/www/fotoprintperm.ru/
-      - /var/www/alex/data/www/xn--h1aahfheaf3as4j.xn--p1ai/:/var/www/alex/data/www/xn--h1aahfheaf3as4j.xn--p1ai/
-      - /var/www/tambov/data/www/xn--80aaaebe5avxvsy.xn--p1ai/:/var/www/tambov/data/www/xn--80aaaebe5avxvsy.xn--p1ai/
-      - /var/www/fotoprint60/data/www/fotoprint60.ru/:/var/www/fotoprint60/data/www/fotoprint60.ru/
-      - /var/www/ilshat/data/www/xn--24-plciib4bya.xn--p1ai/:/var/www/ilshat/data/www/xn--24-plciib4bya.xn--p1ai/
-      - /var/www/fotokniga/data/www/foto-book.online/:/var/www/fotokniga/data/www/foto-book.online/
-      - /var/www/birfotomir/data/www/birfotomir.ru/:/var/www/birfotomir/data/www/birfotomir.ru/
-      - /var/www/fotodrug53/data/www/fotodrug53.ru/:/var/www/fotodrug53/data/www/fotodrug53.ru/
-      - /var/www/nemirov/data/www/pechat63.ru/:/var/www/nemirov/data/www/pechat63.ru/
-      - /var/www/aitifoto/data/www/aitifoto.kz/:/var/www/aitifoto/data/www/aitifoto.kz/
-      - /var/www/fotomig76/data/www/fotomig76.ru/:/var/www/fotomig76/data/www/fotomig76.ru/
-      - /var/www/fotocenter/data/www/xn----jtbybapjely.xn--p1ai/:/var/www/fotocenter/data/www/xn----jtbybapjely.xn--p1ai/
-      - /var/www/tulaprint/data/www/tulaprint.com/:/var/www/tulaprint/data/www/tulaprint.com/
-      - /var/www/photopro.od.ua/data/www/photopro.od.ua/:/var/www/photopro.od.ua/data/www/photopro.od.ua/
-      - /var/www/fotonadom/data/www/fotonadom.su/:/var/www/fotonadom/data/www/fotonadom.su/
-      - /var/www/mispa/data/www/mispa.lv/:/var/www/mispa/data/www/mispa.lv/
+      - ~/tmp/book/:~/tmp/book/
     ports:
-      - 7000-7005:5000
+      - 8070:5000
