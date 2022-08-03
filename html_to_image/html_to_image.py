@@ -200,6 +200,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     if size is None:
         size = default_size
     page = 1
+
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    driver.set_window_size(size['width'], size['height'])
+
     while page <= pages:
 
         if is_user_preview is False:
@@ -211,11 +215,17 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = url + '&width={}&height={}'.format(size['width'], size['height'])
 
         options.update(size)
-        print('Create request to {}'.format(url))
+        start_time = time.time()
         try:
-            imgkit.from_url(url, destination, options=options)
-        except:
+            #imgkit.from_url(url, destination, options=options)
+            logger.info(f"Generating preview image from page: {url}")
+            driver.get(url)
+            element = driver.find_element(By.TAG_NAME, 'body')
+            element.screenshot(destination)
+        except Exception as e:
+            logger.error(f"Can't create screenshot for preview", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
+        logger.info(f"Generating preview took: {time.time() - start_time} seconds")
 
         image = Image.open(destination)
         image.save(destination, quality=100, dpi=(600, 600))
@@ -280,7 +290,6 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
             logger.info(f"Generating image from page: {url}")
             driver.get(url)
             element = driver.find_element(By.TAG_NAME, 'body')
-
             element.screenshot(destination_file)
         except Exception as e:
             logger.error("Can't generae screenshot from book page", e)
@@ -296,12 +305,12 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         os.chmod(destination_file, 0o777)
 
         logger.info(f"Image saved to: {destination_file}")
-        logger.info(f"Rendering progress: {format(int(100 / pages * page))}")
+        logger.info(f"Rendering progress: {format(int(100 / pages * page))}%")
         # sys.stdout.write("\033[F")
         # sys.stdout.write("\033[K")
         page = page + 1
     driver.quit()
-    logger.info(f"Rendering progress: 100")
+    logger.info(f"Rendering progress: 100%")
     return create_response(
         create_destination_file_for_render(domain, uid),
         create_destination_file_for_render(domain, uid, None, False)

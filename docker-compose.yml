@@ -13,4 +13,4 @@ services:
     volumes:
       - ~/tmp/book/:~/tmp/book/
     ports:
-      - 8070:5000
+      - "8070:5000"
