@@ -228,7 +228,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         logger.info(f"Generating preview took: {time.time() - start_time} seconds")
 
         image = Image.open(destination)
-        image.save(destination, quality=100, dpi=(600, 600))
+        image.convert("RGB").save(destination, quality=80)
         os.chmod(destination, 0o777)
         # if rendering user's book
         # save it to preview dir without slicing
