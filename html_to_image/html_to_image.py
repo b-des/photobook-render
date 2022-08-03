@@ -185,7 +185,7 @@ def to_bool(value):
         raise ValueError('invalid literal for boolean: "%s"' % value)
 
 
-preview_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+preview_driver = webdriver.Chrome(options=chrome_options)
 
 
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
