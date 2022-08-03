@@ -166,6 +166,7 @@ def create_response(destination, url_path):
     for (dirpath, dirnames, filenames) in os.walk(destination):
         [f.extend([os.path.join(url_path, file)]) for file in filenames]
         break
+    logger.info(f"Sending http response...")
     return {'data': f, 'code': 200}
 
 
@@ -185,7 +186,7 @@ def to_bool(value):
 
 
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
-    '''
+    """
     Generate preview of book
     :param pages: number of pages
     :param uid: uid of book
@@ -193,7 +194,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     :param size: size of final image
     :param is_user_preview: indicate if it's user's book
     :return:
-    '''
+    """
+
+    total_start_time = time.time()
+
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
@@ -203,7 +207,6 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     driver.set_window_size(size['width'], size['height'])
-    total_start_time = time.time()
     while page <= pages:
 
         if is_user_preview is False:
@@ -237,6 +240,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         page = page + 1
 
+    driver.quit()
     logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds")
     # if is user's book render
     # don't create borders
@@ -254,6 +258,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
 
 def render_book(uid='', domain='', size=None, pages=0, no_border=False):
+    total_start_time = time.time()
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
@@ -311,7 +316,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         # sys.stdout.write("\033[K")
         page = page + 1
     driver.quit()
-    logger.info(f"Rendering progress: 100%")
+    logger.info(f"Rendering progress: 100%, finished in {time.time() - total_start_time} seconds")
     return create_response(
         create_destination_file_for_render(domain, uid),
         create_destination_file_for_render(domain, uid, None, False)
