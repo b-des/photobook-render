@@ -185,6 +185,9 @@ def to_bool(value):
         raise ValueError('invalid literal for boolean: "%s"' % value)
 
 
+preview_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+
+
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     """
     Generate preview of book
@@ -205,8 +208,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         size = default_size
     page = 1
 
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-    driver.set_window_size(size['width'], size['height'])
+    preview_driver.set_window_size(size['width'], size['height'])
     while page <= pages:
 
         if is_user_preview is False:
@@ -222,8 +224,8 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         try:
             #imgkit.from_url(url, destination, options=options)
             logger.info(f"Generating preview image from page: {url}")
-            driver.get(url)
-            element = driver.find_element(By.TAG_NAME, 'body')
+            preview_driver.get(url)
+            element = preview_driver.find_element(By.TAG_NAME, 'body')
             element.screenshot(destination)
         except Exception as e:
             logger.error(f"Can't create screenshot for preview", e)
@@ -240,7 +242,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         page = page + 1
 
-    driver.quit()
+    #driver.quit()
     logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds")
     # if is user's book render
     # don't create borders
