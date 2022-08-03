@@ -203,7 +203,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     driver.set_window_size(size['width'], size['height'])
-
+    total_start_time = time.time()
     while page <= pages:
 
         if is_user_preview is False:
@@ -237,6 +237,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         page = page + 1
 
+    logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds")
     # if is user's book render
     # don't create borders
     if is_user_preview is False:

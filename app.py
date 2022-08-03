@@ -55,7 +55,7 @@ def previews():
         return "Did'nt receive required parameter: <i>uid</i>", 400
     if pages == '':
         return "Did'nt receive required parameter: <i>pages</i>", 400
-    logger.info(f"Creating previews for {domain}, uid: {uid}")
+    logger.info(f"Creating previews for {domain}, uid: {uid}, pages: {pages}")
 
     response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_users_book)
     response.update({'warning': warning})
