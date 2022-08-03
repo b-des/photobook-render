@@ -198,6 +198,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     :param is_user_preview: indicate if it's user's book
     :return:
     """
+    logger.info(f"Creating previews for {domain}, uid: {uid}, pages: {pages}")
 
     total_start_time = time.time()
 
@@ -228,9 +229,9 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             element = preview_driver.find_element(By.TAG_NAME, 'body')
             element.screenshot(destination)
         except Exception as e:
-            logger.error(f"Can't create screenshot for preview", e)
+            logger.error(f"Can't create screenshot for preview, uid: {uid}", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
-        logger.info(f"Generating preview took: {time.time() - start_time} seconds")
+        logger.info(f"Generating preview for {uid} took: {time.time() - start_time} seconds")
 
         image = Image.open(destination)
         image.convert("RGB").save(destination, quality=80)
@@ -243,7 +244,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         page = page + 1
 
     #driver.quit()
-    logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds")
+    logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds, uid: {uid}")
     # if is user's book render
     # don't create borders
     if is_user_preview is False:
