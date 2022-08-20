@@ -43,7 +43,7 @@ def create_destination_file_for_preview(domain, uid, filename=None, include_os_p
         pass
     if filename is None:
         return path
-    return os.path.join(path, '{}.png'.format(filename))
+    return os.path.join(path, '{}.jpg'.format(filename))
 
 
 def create_destination_file_for_render(domain, uid, filename=None, include_os_path=True):
