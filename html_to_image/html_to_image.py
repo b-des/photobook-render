@@ -240,6 +240,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
     # driver.quit()
     logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds, uid: {uid}")
+    preview_driver.quit()
     # if is user's book render
     # don't create borders
     if is_user_preview is False:
