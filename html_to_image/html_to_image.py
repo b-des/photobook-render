@@ -226,7 +226,13 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         except Exception as e:
             logger.error(f"Can't create screenshot for preview, uid: {uid}", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
-        logger.info(f"Generating preview for {uid} took: {time.time() - start_time} seconds")
+
+        response_start = preview_driver.execute_script("return window.performance.timing.responseStart")
+        dom_complete = preview_driver.execute_script("return window.performance.timing.domComplete")
+        loading_time = dom_complete - response_start
+
+        logger.info(f"Generating preview for {uid} took: {time.time() - start_time} seconds. "
+                    f"Page loaded  in: {loading_time} seconds")
 
         image = Image.open(destination)
         image.convert("RGB").save(destination, quality=80)
