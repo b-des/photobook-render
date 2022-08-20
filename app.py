@@ -50,11 +50,11 @@ def previews():
     else:
         warning = 'Not specified width or/and height of book. Default value(1000x500) was used'
     if domain == '':
-        return "Did'nt receive required parameter: <i>domain</i>", 400
+        return "Didn't receive required parameter: <i>domain</i>", 400
     if uid == '':
-        return "Did'nt receive required parameter: <i>uid</i>", 400
+        return "Didn't receive required parameter: <i>uid</i>", 400
     if pages == '':
-        return "Did'nt receive required parameter: <i>pages</i>", 400
+        return "Didn't receive required parameter: <i>pages</i>", 400
 
     response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_users_book)
     response.update({'warning': warning})

@@ -1,37 +1,25 @@
 import os, shutil
-import logging
-import time
+import imgkit
 from PIL import Image, ImageOps
 import image_slicer
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
-
-import config
-from utils import utils
-
-chrome_options = Options()
-chrome_options.headless = True
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--window-size=1920,1080')
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--hide-scrollbars')
+from domain_dict import domains
+import sys
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
-default_size = {'width': 2000, 'height': 1000}
-
-logger = logging.getLogger()
-
-domains_dict = utils.load_domains_dict()
+default_size = {'width': '2000', 'height': '1000'}
+options = {
+    'window-status': 'ready',
+    'quiet': '',
+    'quality': 100,
+    'images': '',
+    'zoom': 1,
+    'format': 'jpg'
+}
 
 
 def create_destination_file_for_preview(domain, uid, filename=None, include_os_path=True):
     try:
-        path = os.path.join(domains_dict.get(domain) if include_os_path is True else domain,
-                            'image/photobook/snapshots', uid)
+        path = os.path.join(domains[domain] if include_os_path is True else domain, 'image/photobook/snapshots', uid)
     except KeyError:
         return None
 
@@ -43,13 +31,12 @@ def create_destination_file_for_preview(domain, uid, filename=None, include_os_p
         pass
     if filename is None:
         return path
-    return os.path.join(path, '{}.png'.format(filename))
+    return os.path.join(path, '{}.jpg'.format(filename))
 
 
 def create_destination_file_for_render(domain, uid, filename=None, include_os_path=True):
     try:
-        path = os.path.join(domains_dict.get(domain) if include_os_path is True else domain, 'image/photobook/renders',
-                            uid)
+        path = os.path.join(domains[domain] if include_os_path is True else domain, 'image/photobook/renders', uid)
     except KeyError:
         return None
 
@@ -77,7 +64,7 @@ def slice_page(page, pages, domain, uid):
     original = create_destination_file_for_preview(domain, uid, '{}-full'.format(page))
     sliced = image_slicer.slice(original, 2, save=False)
 
-    #slice(original)
+    slice(original)
     width, height = sliced[0].image.size
     border_size = int(height - height / 1.02040)
     if page == 1:
@@ -109,8 +96,8 @@ def slice_page(page, pages, domain, uid):
 
     os.remove(original)
     print('Progress: {}%'.format(int(100 / pages * page)))
-    # sys.stdout.write("\033[F")
-    # sys.stdout.write("\033[K")
+    #sys.stdout.write("\033[F")
+    #sys.stdout.write("\033[K")
 
 
 def create_borders(pages, domain, uid):
@@ -160,7 +147,6 @@ def create_response(destination, url_path):
     for (dirpath, dirnames, filenames) in os.walk(destination):
         [f.extend([os.path.join(url_path, file)]) for file in filenames]
         break
-    logger.info(f"Sending http response...")
     return {'data': f, 'code': 200}
 
 
@@ -180,7 +166,7 @@ def to_bool(value):
 
 
 def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
-    """
+    '''
     Generate preview of book
     :param pages: number of pages
     :param uid: uid of book
@@ -188,24 +174,13 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     :param size: size of final image
     :param is_user_preview: indicate if it's user's book
     :return:
-    """
-    logger.info(f"Creating previews for {domain}, uid: {uid}, pages: {pages}")
-
-    total_start_time = time.time()
-
+    '''
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
     if size is None:
         size = default_size
     page = 1
-
-    if config.APP_ENV == 'production':
-        preview_driver = webdriver.Chrome(options=chrome_options)
-    else:
-        preview_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-
-    preview_driver.set_window_size(size['width'], size['height'])
     while page <= pages:
 
         if is_user_preview is False:
@@ -216,20 +191,16 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
         url = render_url.format(domain, uid, page - 1)
         url = url + '&width={}&height={}'.format(size['width'], size['height'])
 
-        start_time = time.time()
+        options.update(size)
+        print('Create request to {}'.format(url))
+        imgkit.from_url(url, destination, options=options)
         try:
-            # imgkit.from_url(url, destination, options=options)
-            logger.info(f"Generating preview image from page: {url}")
-            preview_driver.get(url)
-            element = preview_driver.find_element(By.TAG_NAME, 'body')
-            element.screenshot(destination)
-        except Exception as e:
-            logger.error(f"Can't create screenshot for preview, uid: {uid}", e)
+            imgkit.from_url(url, destination, options=options)
+        except:
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
-        logger.info(f"Generating preview for {uid} took: {time.time() - start_time} seconds")
 
         image = Image.open(destination)
-        image.convert("RGB").save(destination, quality=80)
+        image.save(destination, quality=100, dpi=(600, 600))
         os.chmod(destination, 0o777)
         # if rendering user's book
         # save it to preview dir without slicing
@@ -238,8 +209,6 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
         page = page + 1
 
-    # driver.quit()
-    logger.info(f"Generating preview finished in {time.time() - total_start_time} seconds, uid: {uid}")
     # if is user's book render
     # don't create borders
     if is_user_preview is False:
@@ -256,14 +225,12 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
 
 def render_book(uid='', domain='', size=None, pages=0, no_border=False):
-    total_start_time = time.time()
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
 
     try:
-        path = os.path.join(domains_dict.get(domain), 'image/photobook/renders', uid)
-    except KeyError as e:
-        logger.error("Error when creating image path", e)
+        path = os.path.join(domains[domain], 'image/photobook/renders', uid)
+    except KeyError:
         return None
 
     if os.path.exists(path):
@@ -279,44 +246,29 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['width'] += border_offset * 2
     size['height'] += border_offset
     page = 0
-
-    if config.APP_ENV == 'production':
-        render_driver = webdriver.Chrome(options=chrome_options)
-    else:
-        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-    render_driver.set_window_size(size['width'], size['height'])
     while page < pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
         url = render_url.format(domain, uid, page)
         url = url + '&isFullRender=true&width={}&height={}'.format(size['width'] - border_offset * 2,
                                                                    size['height'] - border_offset)
-        start_time = time.time()
+        options.update(size)
+        print('Make request to {}'.format(url))
         try:
-            logger.info(f"Generating image from page: {url}")
-            render_driver.get(url)
-            element = render_driver.find_element(By.TAG_NAME, 'body')
-            element.screenshot(destination_file)
-        except Exception as e:
-            logger.error("Can't generae screenshot from book page", e)
+            imgkit.from_url(url, destination_file, options=options)
+        except:
+            print(sys.exc_info()[0])
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
-        logger.info(f"Generating screenshot took: {time.time() - start_time} seconds")
         image = Image.open(destination_file)
         os.remove(destination_file)
-
-        logger.info(f"Saving image to: {destination_file}")
-
-        image.convert("RGB").save(destination_file, quality=100, dpi=(600, 600))
+        image.save(destination_file, quality=100, dpi=(600, 600))
         os.chmod(destination_file, 0o777)
-
-        logger.info(f"Image saved to: {destination_file}")
-        logger.info(f"Rendering progress: {format(int(100 / pages * page))}%")
-        # sys.stdout.write("\033[F")
-        # sys.stdout.write("\033[K")
+        print('Rendering progress: {}%'.format(int(100 / pages * page)))
+        #sys.stdout.write("\033[F")
+        #sys.stdout.write("\033[K")
         page = page + 1
-    render_driver.quit()
-    logger.info(f"Rendering progress: 100%, finished in {time.time() - total_start_time} seconds")
+    print('Rendering progress: {}%'.format(100))
     return create_response(
         create_destination_file_for_render(domain, uid),
         create_destination_file_for_render(domain, uid, None, False)
