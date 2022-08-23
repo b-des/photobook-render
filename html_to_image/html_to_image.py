@@ -293,6 +293,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     else:
         render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     render_driver.set_window_size(size['width'], size['height'])
+    render_driver.set_page_load_timeout(30000)
     while page < pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
