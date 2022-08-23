@@ -6,6 +6,7 @@ services:
     image: photobook-render:latest
     container_name: ${NAME}
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app --workers 1 --threads 1 -k gthread --timeout 180
+    shm_size: '2gb'
     deploy:
       resources:
         limits:
@@ -17,6 +18,6 @@ services:
       - DOMAINS_DICT_PATH=domains.json
       - APP_ENV="production"
     volumes:
-      - /tmp/book/:/tmp/book/
+      - /Users/andriiprotsenko/tmp/:/tmp/
     ports:
       - "8070:5000"

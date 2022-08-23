@@ -40,12 +40,13 @@ RUN set -x \
    && chmod 755 /opt/firefox \
    && chmod 755 /opt/firefox/firefox
 
-# Add geckodriver
+    # Add geckodriver
 RUN set -x \
    && curl -sSLO https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VER}/geckodriver-${GECKODRIVER_VER}-linux64.tar.gz \
    && tar zxf geckodriver-*.tar.gz \
    && mv geckodriver /usr/bin/
 
+ENV PATH=/opt/firefox/:$PATH
 # set display port to avoid crash
 ENV DISPLAY=:99
 

@@ -11,6 +11,7 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
+from splinter import Browser
 import config
 from utils import utils
 
@@ -50,7 +51,7 @@ PROFILE.set_preference("general.useragent.override",
                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0")
 
 
-GECKODRIVER_LOG = '/geckodriver.log'
+GECKODRIVER_LOG = '/tmp/geckodriver.log'
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -90,7 +91,7 @@ def create_destination_file_for_render(domain, uid, filename=None, include_os_pa
         os.chmod(path, 0o777)
     if filename is None:
         return path
-    return os.path.join(path, '{}.jpg'.format(filename))
+    return os.path.join(path, '{}.png'.format(filename))
 
 
 def slice(path):
@@ -323,23 +324,24 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     cap = DesiredCapabilities().FIREFOX
     cap["marionette"] = False
     logger.info(f"Initializing web driver...")
-    render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
-                                      #executable_path='/usr/bin/geckodriver',
-                                      capabilities=cap,
-                                      options=firefox_options, service_log_path=GECKODRIVER_LOG)
+    # render_driver = webdriver.Firefox(firefox_profile=PROFILE,
+    #                                   #executable_path='/usr/bin/geckodriver',
+    #                                   capabilities=cap,
+    #                                    #service_log_path=GECKODRIVER_LOG,
+    #                                    service_args=["--marionette-port", "2828"],
+    #                                   options=firefox_options)
+
+    #browser = Browser()
 
     if config.APP_ENV == 'production':
-        pass
-        #render_driver = webdriver.Chrome(options=webdriver_options)
+        render_driver = webdriver.Chrome(options=webdriver_options)
     else:
-        pass
-        #render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
+        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
 
     render_driver.set_window_size(size['width'], size['height'])
-    render_driver.set_page_load_timeout(60)
+    render_driver.set_page_load_timeout(120)
     logger.info(f"Web driver has been initialized")
-    #render_driver.get_full_page_screenshot_as_file()
-    #render_driver.save_screenshot()
+
     while page < pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
@@ -349,17 +351,23 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         start_time = time.time()
         try:
             logger.info(f"Generating image from page: {url}")
+            #browser.visit(url)
+            #element = browser.find_by_id('book-container')
             render_driver.get(url)
             #element = render_driver.find_element(By.TAG_NAME, 'body')
-            render_driver.get_full_page_screenshot_as_file(destination_file)
+            render_driver.save_screenshot(destination_file)
+            logger.info(f"DEST: {destination_file}")
+            #destination_file = element.screenshot(destination_file, full=True)
+
         except Exception as e:
             logger.error(f"Can't generate screenshot from book page: {url}", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
-
+        #time.sleep(3)
         logger.info(f"Generating screenshot took: {time.time() - start_time} seconds")
         image = Image.open(destination_file)
         os.remove(destination_file)
 
+        destination_file = destination_file.replace('.png', '.jpg')
         logger.info(f"Saving image to: {destination_file}")
 
         image.convert("RGB").save(destination_file, quality=100, dpi=(600, 600))
@@ -370,6 +378,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         # sys.stdout.write("\033[F")
         # sys.stdout.write("\033[K")
         page = page + 1
+        render_driver.refresh()
     render_driver.quit()
     logger.info(f"Rendering progress: 100%, finished in {time.time() - total_start_time} seconds")
     return create_response(

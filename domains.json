@@ -1,5 +1,5 @@
 {
   "localhost": "./public",
   "pechat.photo": "./public/pechat.photo/",
-  "foto124.ru": "./public/pechat.photo/"
+  "foto124.ru": "/Users/andriiprotsenko/PycharmProjects/photobook-render/public/pechat.photo/"
 }
