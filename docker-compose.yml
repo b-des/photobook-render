@@ -5,7 +5,13 @@ services:
     build: .
     image: photobook-render:latest
     container_name: ${NAME}
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app --workers 1 --threads 1 -k gthread --timeout 180
+    command: gunicorn --bind 0.0.0.0:8070 wsgi:app --workers 1 --threads 1 -k gthread --timeout 180
+    deploy:
+      resources:
+        limits:
+          memory: 3048M
+        reservations:
+          memory: 3048M
     restart: always
     environment:
       - DOMAINS_DICT_PATH=domains.json
