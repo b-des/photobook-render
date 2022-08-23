@@ -319,13 +319,16 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['height'] += border_offset
     page = 0
 
-    #render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
-                                      #options=firefox_options, service_log_path=GECKODRIVER_LOG)
+    render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
+                                      executable_path='/usr/bin/geckodriver',
+                                      options=firefox_options, service_log_path=GECKODRIVER_LOG)
 
     if config.APP_ENV == 'production':
-        render_driver = webdriver.Chrome(options=webdriver_options)
+        pass
+        #render_driver = webdriver.Chrome(options=webdriver_options)
     else:
-        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
+        pass
+        #render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
 
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
