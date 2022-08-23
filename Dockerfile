@@ -8,8 +8,6 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN apt-get --allow-releaseinfo-change update
-#RUN apt-get -qq -y install wkhtmltopdf
-#RUN pip install Pillow
 
 # Google chrome driver
 # We need wget to set up the PPA and xvfb to have a virtual screen and unzip to install the Chromedriver

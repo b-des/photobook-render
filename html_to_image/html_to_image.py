@@ -20,6 +20,7 @@ chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--disable-dev-shm-usage')
 chrome_options.add_argument('--hide-scrollbars')
 
+
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
 
@@ -305,7 +306,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
             element = render_driver.find_element(By.TAG_NAME, 'body')
             element.screenshot(destination_file)
         except Exception as e:
-            logger.error("Can't generae screenshot from book page", e)
+            logger.error(f"Can't generate screenshot from book page: {url}", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
 
         logger.info(f"Generating screenshot took: {time.time() - start_time} seconds")
