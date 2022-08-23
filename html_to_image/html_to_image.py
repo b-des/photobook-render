@@ -13,13 +13,15 @@ from utils import utils
 
 chrome_options = Options()
 chrome_options.headless = True
+chrome_options.add_argument('enable-automation')
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--window-size=1920,1080')
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--disable-dev-shm-usage')
 chrome_options.add_argument('--hide-scrollbars')
-
+chrome_options.add_argument('--disable-extensions')
+chrome_options.add_argument('--dns-prefetch-disable')
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -294,6 +296,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30000)
+
     while page < pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
