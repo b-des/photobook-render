@@ -11,6 +11,6 @@ services:
       - DOMAINS_DICT_PATH=domains.json
       - APP_ENV="production"
     volumes:
-      - ~/tmp/book/:~/tmp/book/
+      - /tmp/book/:/tmp/book/
     ports:
       - "8070:5000"

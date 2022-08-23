@@ -27,19 +27,24 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 #=========
 # Firefox
 #=========
-ARG FIREFOX_VERSION=latest
-RUN FIREFOX_DOWNLOAD_URL=$(if [ $FIREFOX_VERSION = "latest" ] || [ $FIREFOX_VERSION = "beta-latest" ] || [ $FIREFOX_VERSION = "nightly-latest" ] || [ $FIREFOX_VERSION = "devedition-latest" ] || [ $FIREFOX_VERSION = "esr-latest" ]; then echo "https://download.mozilla.org/?product=firefox-$FIREFOX_VERSION-ssl&os=linux64&lang=en-US"; else echo "https://download-installer.cdn.mozilla.net/pub/firefox/releases/$FIREFOX_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_VERSION.tar.bz2"; fi) \
-  && apt-get update -qqy \
-  && apt-get -qqy --no-install-recommends install firefox libavcodec-extra \
-  && rm -rf /var/lib/apt/lists/* /var/cache/apt/* \
-  && wget --no-verbose -O /tmp/firefox.tar.bz2 $FIREFOX_DOWNLOAD_URL \
-  && apt-get -y purge firefox \
-  && rm -rf /opt/firefox \
-  && tar -C /opt -xjf /tmp/firefox.tar.bz2 \
-  && rm /tmp/firefox.tar.bz2 \
-  && mv /opt/firefox /opt/firefox-$FIREFOX_VERSION \
-  && ln -fs /opt/firefox-$FIREFOX_VERSION/firefox /usr/bin/firefox
+# Add latest FireFox
+ENV GECKODRIVER_VER v0.31.0
+ENV FIREFOX_VER 103.0
+RUN set -x \
+   && apt install -y \
+       libx11-xcb1 \
+       libdbus-glib-1-2 \
+   && curl -sSLO https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VER}/linux-x86_64/en-US/firefox-${FIREFOX_VER}.tar.bz2 \
+   && tar -jxf firefox-* \
+   && mv firefox /opt/ \
+   && chmod 755 /opt/firefox \
+   && chmod 755 /opt/firefox/firefox
 
+# Add geckodriver
+RUN set -x \
+   && curl -sSLO https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VER}/geckodriver-${GECKODRIVER_VER}-linux64.tar.gz \
+   && tar zxf geckodriver-*.tar.gz \
+   && mv geckodriver /usr/bin/
 
 # set display port to avoid crash
 ENV DISPLAY=:99
