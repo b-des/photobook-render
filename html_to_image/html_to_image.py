@@ -294,6 +294,7 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
 
 
 def render_book(uid='', domain='', size=None, pages=0, no_border=False):
+    logger.info(f"Got request for rendering book with uid: {uid}")
     total_start_time = time.time()
     if create_destination_file_for_preview(domain, uid) is None:
         return {'message': "Unregistered domain name received", 'code': 400}
@@ -318,8 +319,14 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['height'] += border_offset
     page = 0
 
-    render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
-                                      options=firefox_options, service_log_path=GECKODRIVER_LOG)
+    #render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
+                                      #options=firefox_options, service_log_path=GECKODRIVER_LOG)
+
+    if config.APP_ENV == 'production':
+        render_driver = webdriver.Chrome(options=webdriver_options)
+    else:
+        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
+
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
     #render_driver.save_screenshot()
