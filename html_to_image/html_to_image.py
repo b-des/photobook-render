@@ -5,23 +5,36 @@ from PIL import Image, ImageOps
 import image_slicer
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 import config
 from utils import utils
 
-chrome_options = Options()
-chrome_options.headless = True
-chrome_options.add_argument('enable-automation')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--window-size=1920,1080')
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--hide-scrollbars')
-chrome_options.add_argument('--disable-extensions')
-chrome_options.add_argument('--dns-prefetch-disable')
+webdriver_options = Options()
+webdriver_options.headless = True
+webdriver_options.add_argument('enable-automation')
+webdriver_options.add_argument('--no-sandbox')
+webdriver_options.add_argument('--window-size=1920,1080')
+webdriver_options.add_argument('--headless')
+webdriver_options.add_argument('--disable-gpu')
+webdriver_options.add_argument('--disable-dev-shm-usage')
+webdriver_options.add_argument('--hide-scrollbars')
+webdriver_options.add_argument('--disable-extensions')
+webdriver_options.add_argument('--dns-prefetch-disable')
+
+firefox_options = FirefoxOptions()
+firefox_options.headless = True
+firefox_options.add_argument('enable-automation')
+firefox_options.add_argument('--no-sandbox')
+firefox_options.add_argument('--window-size=1920,1080')
+firefox_options.add_argument('--headless')
+firefox_options.add_argument('--disable-gpu')
+firefox_options.add_argument('--disable-dev-shm-usage')
+firefox_options.add_argument('--hide-scrollbars')
+firefox_options.add_argument('--disable-extensions')
+firefox_options.add_argument('--dns-prefetch-disable')
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -204,9 +217,9 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
     page = 1
 
     if config.APP_ENV == 'production':
-        preview_driver = webdriver.Chrome(options=chrome_options)
+        preview_driver = webdriver.Chrome(options=webdriver_options)
     else:
-        preview_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        preview_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
 
     preview_driver.set_window_size(size['width'], size['height'])
     while page <= pages:
@@ -291,9 +304,9 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     page = 0
 
     if config.APP_ENV == 'production':
-        render_driver = webdriver.Chrome(options=chrome_options)
+        render_driver = webdriver.Firefox(options=firefox_options)
     else:
-        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
     #render_driver.save_screenshot()
