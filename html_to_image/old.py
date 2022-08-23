@@ -2,8 +2,9 @@ import os, shutil
 import imgkit
 from PIL import Image, ImageOps
 import image_slicer
-from domain_dict import domains
 import sys
+
+from utils import utils
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': '2000', 'height': '1000'}
@@ -16,10 +17,12 @@ options = {
     'format': 'jpg'
 }
 
+domains_dict = utils.load_domains_dict()
+
 
 def create_destination_file_for_preview(domain, uid, filename=None, include_os_path=True):
     try:
-        path = os.path.join(domains[domain] if include_os_path is True else domain, 'image/photobook/snapshots', uid)
+        path = os.path.join(domains_dict.get(domain) if include_os_path is True else domain, 'image/photobook/snapshots', uid)
     except KeyError:
         return None
 
@@ -36,7 +39,7 @@ def create_destination_file_for_preview(domain, uid, filename=None, include_os_p
 
 def create_destination_file_for_render(domain, uid, filename=None, include_os_path=True):
     try:
-        path = os.path.join(domains[domain] if include_os_path is True else domain, 'image/photobook/renders', uid)
+        path = os.path.join(domains_dict.get(domain) if include_os_path is True else domain, 'image/photobook/renders', uid)
     except KeyError:
         return None
 
@@ -229,7 +232,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
         return {'message': "Unregistered domain name received", 'code': 400}
 
     try:
-        path = os.path.join(domains[domain], 'image/photobook/renders', uid)
+        path = os.path.join(domains_dict.get(domain), 'image/photobook/renders', uid)
     except KeyError:
         return None
 
