@@ -318,7 +318,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['height'] += border_offset
     page = 0
 
-    render_driver = webdriver.Firefox(firefox_profile=PROFILE,
+    render_driver = webdriver.Firefox(firefox_profile=PROFILE, firefox_binary=FIREFOX_BINARY,
                                       options=firefox_options)
     render_driver.set_window_size(size['width'] / 1, size['height'] / 1)
     render_driver.set_page_load_timeout(30)
