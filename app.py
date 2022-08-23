@@ -56,9 +56,9 @@ def previews():
     if pages == '':
         return "Didn't receive required parameter: <i>pages</i>", 400
 
-    response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_users_book)
-    response.update({'warning': warning})
-    return jsonify(response)
+    #response = make_previews(pages=int(pages), domain=domain, uid=uid, size=size, is_user_preview=is_users_book)
+    #response.update({'warning': warning})
+    return jsonify({'warning': warning})
 
 
 @app.route("/render", methods=['GET'])

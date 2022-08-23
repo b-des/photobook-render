@@ -318,9 +318,9 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['height'] += border_offset
     page = 0
 
-    render_driver = webdriver.Firefox(firefox_profile=PROFILE, firefox_binary=FIREFOX_BINARY,
+    render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
                                       options=firefox_options)
-    render_driver.set_window_size(size['width'] / 1, size['height'] / 1)
+    render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
     #render_driver.save_screenshot()
     while page < pages:
