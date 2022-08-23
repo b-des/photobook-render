@@ -303,10 +303,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     size['height'] += border_offset
     page = 0
 
-    if config.APP_ENV == 'production':
-        render_driver = webdriver.Firefox(options=firefox_options)
-    else:
-        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
+    render_driver = webdriver.Firefox(options=firefox_options)
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
     #render_driver.save_screenshot()
