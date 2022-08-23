@@ -49,7 +49,7 @@ PROFILE.set_preference("general.useragent.override",
                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0")
 
 
-GECKODRIVER_LOG = './/geckodriver.log'
+GECKODRIVER_LOG = '/geckodriver.log'
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -89,7 +89,7 @@ def create_destination_file_for_render(domain, uid, filename=None, include_os_pa
         os.chmod(path, 0o777)
     if filename is None:
         return path
-    return os.path.join(path, '{}.png'.format(filename))
+    return os.path.join(path, '{}.jpg'.format(filename))
 
 
 def slice(path):
@@ -319,7 +319,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     page = 0
 
     render_driver = webdriver.Firefox(firefox_binary=FIREFOX_BINARY, firefox_profile=PROFILE,
-                                      options=firefox_options)
+                                      options=firefox_options, service_log_path=GECKODRIVER_LOG)
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(30)
     #render_driver.save_screenshot()

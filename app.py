@@ -86,7 +86,7 @@ def render():
         thread.start()
         return render_template("result.html", data=[], redirect=request.args.get('redirectUrl'))
     else:
-        print("render_book")
+        logger.info(f"Got request for rendering book with uid: {uid}")
         response = render_book(pages=int(pages), domain=domain, uid=uid, size=size, no_border=no_border)
         response.update({'warning': warning})
         return jsonify(response)
