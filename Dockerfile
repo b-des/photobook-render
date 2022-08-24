@@ -46,6 +46,8 @@ RUN set -x \
    && tar zxf geckodriver-*.tar.gz \
    && mv geckodriver /usr/bin/
 
+RUN apt-get -qq -y install wkhtmltopdf
+
 ENV PATH=/opt/firefox/:$PATH
 # set display port to avoid crash
 ENV DISPLAY=:99

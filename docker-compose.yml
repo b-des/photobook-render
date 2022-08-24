@@ -19,5 +19,6 @@ services:
       - APP_ENV="production"
     volumes:
       - /Users/andriiprotsenko/tmp/:/tmp/
+      - /Users/andriiprotsenko/PycharmProjects/photobook-render/public/pechat.photo/:/Users/andriiprotsenko/PycharmProjects/photobook-render/public/pechat.photo/
     ports:
       - "8070:5000"

@@ -1,0 +1,137 @@
+[1661325344.905][INFO]: Starting ChromeDriver 104.0.5112.79 (3cf3e8c8a07d104b9e1260c910efb8f383285dc5-refs/branch-heads/5112@{#1307}) on port 61434
+[1661325344.905][INFO]: Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+[1661325345.103][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] COMMAND InitSession {
+   "capabilities": {
+      "alwaysMatch": {
+         "browserName": "chrome",
+         "goog:chromeOptions": {
+            "args": [ "--headless", "enable-automation", "--no-sandbox", "--window-size=1920,1080", "--headless", "--disable-gpu", "--disable-dev-shm-usage", "--hide-scrollbars", "--disable-extensions", "--dns-prefetch-disable", "----force-device-scale-factor=1", "----disable-setuid-sandbox" ],
+            "extensions": [  ]
+         },
+         "pageLoadStrategy": "normal"
+      },
+      "firstMatch": [ {
+      } ]
+   }
+}
+[1661325345.107][INFO]: Populating Preferences file: {
+   "alternate_error_pages": {
+      "enabled": false
+   },
+   "autofill": {
+      "enabled": false
+   },
+   "browser": {
+      "check_default_browser": false
+   },
+   "distribution": {
+      "import_bookmarks": false,
+      "import_history": false,
+      "import_search_engine": false,
+      "make_chrome_default_for_user": false,
+      "skip_first_run_ui": true
+   },
+   "dns_prefetching": {
+      "enabled": false
+   },
+   "profile": {
+      "content_settings": {
+         "pattern_pairs": {
+            "https://*,*": {
+               "media-stream": {
+                  "audio": "Default",
+                  "video": "Default"
+               }
+            }
+         }
+      },
+      "default_content_setting_values": {
+         "geolocation": 1
+      },
+      "default_content_settings": {
+         "geolocation": 1,
+         "mouselock": 1,
+         "notifications": 1,
+         "popups": 1,
+         "ppapi-broker": 1
+      },
+      "password_manager_enabled": false
+   },
+   "safebrowsing": {
+      "enabled": false
+   },
+   "search": {
+      "suggest_enabled": false
+   },
+   "translate": {
+      "enabled": false
+   }
+}
+[1661325345.107][INFO]: Populating Local State file: {
+   "background_mode": {
+      "enabled": false
+   },
+   "ssl": {
+      "rev_checking": {
+         "enabled": false
+      }
+   }
+}
+[1661325345.108][INFO]: Launching chrome: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome --disable-setuid-sandbox --force-device-scale-factor=1 --allow-pre-commit-input --disable-background-networking --disable-client-side-phishing-detection --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-gpu --disable-hang-monitor --disable-popup-blocking --disable-prompt-on-repost --disable-sync --dns-prefetch-disable --enable-automation --enable-blink-features=ShadowDOMV0 --enable-logging --headless --hide-scrollbars --log-level=0 --no-first-run --no-sandbox --no-service-autorun --password-store=basic --remote-debugging-port=0 --test-type=webdriver --use-mock-keychain --user-data-dir=/var/folders/r7/yb6yx3_9607_nr09xlhjxyzr0000gn/T/.com.google.Chrome.I1vmPf --window-size=1920,1080 data:,
+[1661325345.766][INFO]: resolved localhost to ["::1","127.0.0.1"]
+[1661325345.916][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] RESPONSE InitSession {
+   "capabilities": {
+      "acceptInsecureCerts": false,
+      "browserName": "chrome",
+      "browserVersion": "104.0.5112.101",
+      "chrome": {
+         "chromedriverVersion": "104.0.5112.79 (3cf3e8c8a07d104b9e1260c910efb8f383285dc5-refs/branch-heads/5112@{#1307})",
+         "userDataDir": "/var/folders/r7/yb6yx3_9607_nr09xlhjxyzr0000gn/T/.com.google.Chrome.I1vmPf"
+      },
+      "goog:chromeOptions": {
+         "debuggerAddress": "localhost:61439"
+      },
+      "networkConnectionEnabled": false,
+      "pageLoadStrategy": "normal",
+      "platformName": "mac os x",
+      "proxy": {
+      },
+      "setWindowRect": true,
+      "strictFileInteractability": false,
+      "timeouts": {
+         "implicit": 0,
+         "pageLoad": 300000,
+         "script": 30000
+      },
+      "unhandledPromptBehavior": "dismiss and notify",
+      "webauthn:extension:credBlob": true,
+      "webauthn:extension:largeBlob": true,
+      "webauthn:virtualAuthenticators": true
+   },
+   "sessionId": "31fc82f65af1dcd7f48b73a7dd3fef35"
+}
+[1661325345.917][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] COMMAND SetWindowRect {
+   "height": 3000,
+   "width": 6000,
+   "x": null,
+   "y": null
+}
+[1661325345.917][INFO]: Waiting for pending navigations...
+[1661325345.918][INFO]: Done waiting for pending navigations. Status: ok
+[1661325345.918][INFO]: resolved localhost to ["::1","127.0.0.1"]
+[1661325346.021][INFO]: Waiting for pending navigations...
+[1661325346.021][INFO]: Done waiting for pending navigations. Status: ok
+[1661325346.021][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] RESPONSE SetWindowRect {
+   "height": 3000,
+   "width": 6000,
+   "x": 0,
+   "y": -1880
+}
+[1661325346.022][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] COMMAND SetTimeouts {
+   "pageLoad": 120000
+}
+[1661325346.022][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] RESPONSE SetTimeouts
+[1661325346.023][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] COMMAND SetTimeouts {
+   "script": 120000
+}
+[1661325346.023][INFO]: [31fc82f65af1dcd7f48b73a7dd3fef35] RESPONSE SetTimeouts

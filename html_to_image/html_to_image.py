@@ -1,6 +1,8 @@
 import os, shutil
 import logging
 import time
+
+import imgkit
 from PIL import Image, ImageOps
 import image_slicer
 from selenium import webdriver
@@ -26,6 +28,8 @@ webdriver_options.add_argument('--disable-dev-shm-usage')
 webdriver_options.add_argument('--hide-scrollbars')
 webdriver_options.add_argument('--disable-extensions')
 webdriver_options.add_argument('--dns-prefetch-disable')
+webdriver_options.add_argument('----force-device-scale-factor=1')
+webdriver_options.add_argument('----disable-setuid-sandbox')
 
 firefox_options = FirefoxOptions()
 firefox_options.headless = True
@@ -52,6 +56,7 @@ PROFILE.set_preference("general.useragent.override",
 
 
 GECKODRIVER_LOG = '/tmp/geckodriver.log'
+CHROMEDRIVER_LOG = './chromedriver.log'
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -323,6 +328,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
 
     cap = DesiredCapabilities().FIREFOX
     cap["marionette"] = False
+
     logger.info(f"Initializing web driver...")
     # render_driver = webdriver.Firefox(firefox_profile=PROFILE,
     #                                   #executable_path='/usr/bin/geckodriver',
@@ -331,15 +337,17 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     #                                    service_args=["--marionette-port", "2828"],
     #                                   options=firefox_options)
 
-    #browser = Browser()
+    # browser = Browser()
 
     if config.APP_ENV == 'production':
-        render_driver = webdriver.Chrome(options=webdriver_options)
+        render_driver = webdriver.Chrome(options=webdriver_options, service_log_path=CHROMEDRIVER_LOG)
     else:
-        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
+        render_driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options,
+                                         service_log_path=CHROMEDRIVER_LOG)
 
     render_driver.set_window_size(size['width'], size['height'])
     render_driver.set_page_load_timeout(120)
+    render_driver.set_script_timeout(120)
     logger.info(f"Web driver has been initialized")
 
     while page < pages:
@@ -350,20 +358,30 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
                                                                    size['height'] - border_offset)
         start_time = time.time()
         try:
-            logger.info(f"Generating image from page: {url}")
+            options = {
+                'window-status': 'ready',
+                'quiet': '',
+                'quality': 100,
+                'images': '',
+                'zoom': 1,
+                'format': 'jpg'
+            }
+            options.update(size)
+            logger.info(f"Generating image from page: {url} using imgkit")
+            imgkit.from_url(url, destination_file, options=options)
             #browser.visit(url)
             #element = browser.find_by_id('book-container')
-            render_driver.get(url)
+            #render_driver.get(url)
             #element = render_driver.find_element(By.TAG_NAME, 'body')
-            render_driver.save_screenshot(destination_file)
+            #render_driver.save_screenshot(destination_file)
             logger.info(f"DEST: {destination_file}")
             #destination_file = element.screenshot(destination_file, full=True)
 
         except Exception as e:
-            logger.error(f"Can't generate screenshot from book page: {url}", e)
+            logger.error(f"Can't generate screenshot from book page: {url}, took {time.time() - start_time} seconds", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
-        #time.sleep(3)
-        logger.info(f"Generating screenshot took: {time.time() - start_time} seconds")
+        logger.info(f"Generating screenshot took: {time.time() - start_time} seconds. Sleep for 3 seconds....")
+        time.sleep(3)
         image = Image.open(destination_file)
         os.remove(destination_file)
 
