@@ -266,10 +266,10 @@ def make_previews(pages=0, uid='', domain='', size=None, is_user_preview=False):
             }
             options.update(size)
             logger.info(f"Generating preview image from page: {url}")
-            imgkit.from_url(url, destination, options=options)
-            #preview_driver.get(url)
-            #element = preview_driver.find_element(By.TAG_NAME, 'body')
-            #element.screenshot(destination)
+            #imgkit.from_url(url, destination, options=options)
+            preview_driver.get(url)
+            element = preview_driver.find_element(By.TAG_NAME, 'body')
+            element.screenshot(destination)
         except Exception as e:
             logger.error(f"Can't create screenshot for preview, uid: {uid}", e)
             return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
