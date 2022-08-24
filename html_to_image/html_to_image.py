@@ -28,8 +28,10 @@ webdriver_options.add_argument('--disable-dev-shm-usage')
 webdriver_options.add_argument('--hide-scrollbars')
 webdriver_options.add_argument('--disable-extensions')
 webdriver_options.add_argument('--dns-prefetch-disable')
-webdriver_options.add_argument('----force-device-scale-factor=1')
-webdriver_options.add_argument('----disable-setuid-sandbox')
+webdriver_options.add_argument('--force-device-scale-factor=1')
+webdriver_options.add_argument('--disable-setuid-sandbox')
+webdriver_options.add_argument('--disable-browser-side-navigation')
+webdriver_options.add_argument('enable-features=NetworkServiceInProcess')
 
 firefox_options = FirefoxOptions()
 firefox_options.headless = True
