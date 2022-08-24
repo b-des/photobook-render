@@ -31,7 +31,7 @@ webdriver_options.add_argument('--dns-prefetch-disable')
 webdriver_options.add_argument('--force-device-scale-factor=1')
 webdriver_options.add_argument('--disable-setuid-sandbox')
 webdriver_options.add_argument('--disable-browser-side-navigation')
-webdriver_options.add_argument('enable-features=NetworkServiceInProcess')
+webdriver_options.add_argument('enable-features=NetworkService')
 
 firefox_options = FirefoxOptions()
 firefox_options.headless = True
@@ -342,7 +342,6 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     #                                    service_args=["--marionette-port", "2828"],
     #                                   options=firefox_options)
 
-    # browser = Browser()
 
     if config.APP_ENV == 'production':
         render_driver = webdriver.Chrome(options=webdriver_options, service_log_path=CHROMEDRIVER_LOG)
