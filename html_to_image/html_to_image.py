@@ -371,12 +371,11 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
             }
             options.update(size)
             logger.info(f"Generating image from page: {url} using imgkit")
-            imgkit.from_url(url, destination_file, options=options)
-            #browser.visit(url)
-            #element = browser.find_by_id('book-container')
-            #render_driver.get(url)
-            #element = render_driver.find_element(By.TAG_NAME, 'body')
-            #render_driver.save_screenshot(destination_file)
+            #imgkit.from_url(url, destination_file, options=options)
+
+            render_driver.get(url)
+            element = render_driver.find_element(By.TAG_NAME, 'body')
+            element.screenshot(destination_file)
             logger.info(f"DEST: {destination_file}")
             #destination_file = element.screenshot(destination_file, full=True)
 
