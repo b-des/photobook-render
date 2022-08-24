@@ -56,7 +56,7 @@ PROFILE.set_preference("general.useragent.override",
 
 
 GECKODRIVER_LOG = '/tmp/geckodriver.log'
-CHROMEDRIVER_LOG = './chromedriver.log'
+CHROMEDRIVER_LOG = '/tmp/chromedriver.log'
 
 render_url = 'https://{}/index.php?route=photobook/photobook/renderPage&uid={}&page={}'
 default_size = {'width': 2000, 'height': 1000}
@@ -353,6 +353,16 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
     render_driver.set_script_timeout(120)
     logger.info(f"Web driver has been initialized")
 
+    options = {
+        'window-status': 'ready',
+        'quiet': '',
+        'quality': 100,
+        'images': '',
+        'zoom': 1,
+        'format': 'jpg'
+    }
+    options.update(size)
+
     while page < pages:
         destination_file = create_destination_file_for_render(domain, uid, page)
 
@@ -361,15 +371,7 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
                                                                    size['height'] - border_offset)
         start_time = time.time()
         try:
-            options = {
-                'window-status': 'ready',
-                'quiet': '',
-                'quality': 100,
-                'images': '',
-                'zoom': 1,
-                'format': 'jpg'
-            }
-            options.update(size)
+
             logger.info(f"Generating image from page: {url} using imgkit")
             #imgkit.from_url(url, destination_file, options=options)
 
@@ -381,7 +383,9 @@ def render_book(uid='', domain='', size=None, pages=0, no_border=False):
 
         except Exception as e:
             logger.error(f"Can't generate screenshot from book page: {url}, took {time.time() - start_time} seconds", e)
-            return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
+            logger.info(f"Error when using chrome driver. Trying to generate image with imgkit")
+            imgkit.from_url(url, destination_file, options=options)
+            #return {'message': "Error occurred while render image with wkhtmltoimage", 'code': 404}
         logger.info(f"Generating screenshot took: {time.time() - start_time} seconds. Sleep for 3 seconds....")
         time.sleep(3)
         image = Image.open(destination_file)
